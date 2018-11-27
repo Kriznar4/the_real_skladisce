@@ -9,5 +9,5 @@ Baza bo namenjena evidenci naročil materiala v nekem podjetju. V njej bomo hran
 
 ## ER Diagram
 
-![ER diagram](ER_Diagram.png)
+![ER diagram](ER_Diagram.GIF)
                             
