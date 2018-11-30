@@ -74,18 +74,18 @@ def ustvari_tabele(cur):
 @commit
 def uvozi_filme(cur):
     """
-    Uvozi podatke o filmih.
+    Uvozi podatke o narocilih.
     """
-    cur.execute("DELETE FROM film;")
-    with open('podatki/film.csv') as datoteka:
+    cur.execute("DELETE FROM narocila;")
+    with open('podatki/narocila.csv') as datoteka:
         podatki = csv.reader(datoteka)
         stolpci = next(podatki)
         poizvedba = """
-            INSERT INTO film VALUES ({})
-        """.format(', '.join(["?"] * len(stolpci)))
+            INSERT INTO narocila VALUES ({})
+        """.format(', '.join(["?"] * len(stolpci))) #---------zakaj tukaj vprašaji???-------------
         for vrstica in podatki:
             cur.execute(poizvedba, vrstica)
-
+#-------------------------------------------------------do sem nekaj poskušal--------------------------------------------------------------------------------
 @commit
 def uvozi_osebe(cur):
     """
