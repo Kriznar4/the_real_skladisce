@@ -18,48 +18,51 @@ def ustvari_tabele(cur):
     Ustvari tabele v bazi.
     """
     cur.execute("""
-        CREATE TABLE izdelki (
-        sifra         INTEGER PRIMARY KEY AUTOINCREMENT,
-        ime           STRING  NOT NULL
-                              UNIQUE,
-        zaloga        INTEGER NOT NULL
-                              CHECK (zaloga >= 0),
-        opis          STRING,
-        trenutna_cena DOUBLE
+    CREATE TABLE izdelki (
+        sifra              INTEGER PRIMARY KEY AUTOINCREMENT,
+        ime                STRING  NOT NULL,
+        velikost_pakiranja INTEGER CHECK (kolicina >= 0),
+        kolicina           INTEGER CHECK (kolicina >= 0),
+        opis               STRING,
+        tip_izdelka        STRING
     );
     """)
+
     cur.execute("""
     CREATE TABLE narocila (
         st_narocila    INTEGER PRIMARY KEY AUTOINCREMENT,
-        datum_narocila DATE,
-        datum_prejetja DATE,
-        partner        STRING
+        datum_narocila DATE    NOT NULL,
+        partner        STRING  NOT NULL,
+        komentar       STRING
     );
-
     """)
+
     cur.execute("""
     CREATE TABLE partnerji (
-        ddv    INTEGER PRIMARY KEY,
-        ime    STRING,
-        naslov STRING,
-        drzava STRING
-    );
-
+        sifra   INTEGER PRIMARY KEY AUTOINCREMENT,
+        ddv     INTEGER UNIQUE,
+        ime     STRING,
+        naslov  STRING,
+        telefon,
+        email   STRING
+);
     """)
+
     cur.execute("""
     CREATE TABLE kosarica (
-        st_narocila   INTEGER,
-        sifra_izdelka INTEGER,
-        cena          DOUBLE  NOT NULL,
-        popust        DOUBLE,
-        kolicina      DOUBLE  NOT NULL,
+        st_narocila    INTEGER,
+        sifra_izdelka  INTEGER,
+        cena           DOUBLE  NOT NULL,
+        popust         DOUBLE,
+        kolicina       DOUBLE  NOT NULL,
+        datum_prejetja DATE,
         PRIMARY KEY (
             st_narocila,
             sifra_izdelka
         )
     );
-
     """)
+
     cur.execute("""
     CREATE TABLE ponudba (
         partner INTEGER,
