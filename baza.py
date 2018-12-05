@@ -32,7 +32,8 @@ def ustvari_tabele(cur):
     CREATE TABLE narocila (
         st_narocila    INTEGER PRIMARY KEY AUTOINCREMENT,
         datum_narocila DATE    NOT NULL,
-        partner        STRING  NOT NULL,
+        partner        INTEGER NOT NULL
+                            REFERENCES partnerji (sifra),
         komentar       STRING
     );
     """)
@@ -50,8 +51,8 @@ def ustvari_tabele(cur):
 
     cur.execute("""
     CREATE TABLE kosarica (
-        st_narocila    INTEGER,
-        sifra_izdelka  INTEGER,
+        st_narocila    INTEGER REFERENCES narocila (st_narocila),
+        sifra_izdelka  INTEGER REFERENCES narocila (st_narocila),
         cena           DOUBLE  NOT NULL,
         popust         DOUBLE,
         kolicina       DOUBLE  NOT NULL,
@@ -65,8 +66,8 @@ def ustvari_tabele(cur):
 
     cur.execute("""
     CREATE TABLE ponudba (
-        partner INTEGER,
-        izdelek INTEGER,
+        partner INTEGER REFERENCES partnerji (sifra),
+        izdelek INTEGER REFERENCES izdelki (sifra),
         PRIMARY KEY (
             partner,
             izdelek
