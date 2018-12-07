@@ -22,9 +22,11 @@ def ustvari_tabele(cur):
         sifra              INTEGER PRIMARY KEY AUTOINCREMENT,
         ime                STRING  NOT NULL,
         velikost_pakiranja INTEGER CHECK (kolicina >= 0),
+        enota              STRING  DEFAULT X,
         kolicina           INTEGER CHECK (kolicina >= 0),
         opis               STRING,
-        tip_izdelka        STRING
+        tip_izdelka        STRING,
+        opomnik            INTEGER DEFAULT (3) 
     );
     """)
 
