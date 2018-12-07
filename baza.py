@@ -26,7 +26,11 @@ def ustvari_tabele(cur):
         kolicina           INTEGER CHECK (kolicina >= 0),
         opis               STRING,
         tip_izdelka        STRING,
-        opomnik            INTEGER DEFAULT (3) 
+        opomnik            INTEGER DEFAULT (3),
+        UNIQUE (
+            ime,
+            velikost_pakiranja
+        )
     );
     """)
 
@@ -76,101 +80,110 @@ def ustvari_tabele(cur):
         )
     );
     """)
-#------------------------------------------------------------do sem spremenjeno------------------------------------------------------------------------------
-@commit
-def uvozi_filme(cur):
+
+def uvozi_izdelke(cur):
     """
-    Uvozi podatke o narocilih.
+    Uvozi podatke o izdelkih.
     """
-    cur.execute("DELETE FROM narocila;")
-    with open('podatki/narocila.csv') as datoteka:
+    cur.execute("DELETE FROM izdelki;")
+    with open('podatki/izdelki.csv') as datoteka:
+        podatki = csv.reader(datoteka)
+        stolpci = next(podatki)
+        poizvedba = """
+            INSERT INTO izdelki VALUES ({})
+        """.format(', '.join(["?"] * len(stolpci))) 
+        for vrstica in podatki:
+            cur.execute(poizvedba, vrstica)
+
+def uvozi_kosarico(cur):
+    #TODO: popravi to funkcijo
+    """
+    Uvozi podatke o kosarici.
+    """
+    cur.execute("DELETE FROM kosarica;")
+    pari_ponudbe = cur.execute("""
+        SELECT * FROM ponudba
+        """)
+    with open('podatki/kosarica.csv') as datoteka:
+        podatki = csv.reader(datoteka)
+        stolpci = next(podatki)
+        ind_sifra_izdelka = stolpci.index('sifra_izdelka')
+        ind_st_narocila = stolpci.index('st_narocila')
+        ind_stolpci_narocila = cur.execute("""PRAGMA table_info(narocila);""").index('partner')
+        poizvedba = """
+            INSERT INTO izdelki VALUES ({})
+        """.format(', '.join(["?"] * len(stolpci))) 
+        poizvedba_ponudba = """
+            INSERT INTO ponudba (?, ?)
+        """
+        ponudba = cur.execute(poizvedba_ponudba)
+        for vrstica in podatki:
+            sifra_izdelka = vrstica[ind_sifra_izdelka]
+            st_narocila = vrstica[ind_st_narocila]
+
+            if ()
+            # TODO: preveri če so izdelki v že ponudbi in če niso jih dodaj
+
+            cur.execute(poizvedba, vrstica)
+
+def uvozi_partnerje(cur):
+    """
+    Uvozi podatke o partnerjih.
+    """
+    cur.execute("DELETE FROM partnerji;")
+    with open('podatki/partnerji.csv') as datoteka:
+        podatki = csv.reader(datoteka)
+        stolpci = next(podatki)
+        poizvedba = """
+            INSERT INTO izdelki VALUES ({})
+        """.format(', '.join(["?"] * len(stolpci))) 
+        for vrstica in podatki:
+            cur.execute(poizvedba, vrstica)
+
+def uvozi_ponudbo(cur):
+    """
+    Uvozi podatke o ponudbi.
+    """
+    cur.execute("DELETE FROM ponudba;")
+    with open('podatki/ponudba.csv') as datoteka:
+        podatki = csv.reader(datoteka)
+        stolpci = next(podatki)
+        poizvedba = """
+            INSERT INTO izdelki VALUES ({})
+        """.format(', '.join(["?"] * len(stolpci))) 
+        for vrstica in podatki:
+            cur.execute(poizvedba, vrstica)
+
+def uvozi_narocila(cur):
+    """
+    uvozi podatke o narocilih.
+    """
+    cur.execute("DELETE FROM naroila;")
+    with open('podatki/ponudba.csv') as datoteka:
         podatki = csv.reader(datoteka)
         stolpci = next(podatki)
         poizvedba = """
             INSERT INTO narocila VALUES ({})
-        """.format(', '.join(["?"] * len(stolpci))) #---------zakaj tukaj vprašaji???-------------
-        for vrstica in podatki:
-            cur.execute(poizvedba, vrstica)
-#-------------------------------------------------------do sem nekaj poskušal--------------------------------------------------------------------------------
-@commit
-def uvozi_osebe(cur):
-    """
-    Uvozi podatke o osebah.
-    """
-    cur.execute("DELETE FROM oseba;")
-    with open('podatki/oseba.csv') as datoteka:
-        podatki = csv.reader(datoteka)
-        stolpci = next(podatki)
-        poizvedba = """
-            INSERT INTO oseba VALUES ({})
         """.format(', '.join(["?"] * len(stolpci)))
         for vrstica in podatki:
             cur.execute(poizvedba, vrstica)
 
-@commit
-def uvozi_vloge(cur):
-    """
-    Uvozi podatke o vlogah.
-    """
-    cur.execute("DELETE FROM nastopa;")
-    cur.execute("DELETE FROM vloga;")
-    vloge = {}
-    with open('podatki/vloge.csv') as datoteka:
-        podatki = csv.reader(datoteka)
-        stolpci = next(podatki)
-        v = stolpci.index('vloga')
-        poizvedba = """
-            INSERT INTO nastopa VALUES ({})
-        """.format(', '.join(["?"] * len(stolpci)))
-        poizvedba_vloga = "INSERT INTO vloga (naziv) VALUES (?);"
-        for vrstica in podatki:
-            vloga = vrstica[v]
-            if vloga not in vloge:
-                cur.execute(poizvedba_vloga, [vloga])
-                vloge[vloga] = cur.lastrowid
-            vrstica[v] = vloge[vloga]
-            cur.execute(poizvedba, vrstica)
-
-@commit
-def uvozi_zanre(cur):
-    """
-    Uvozi podatke o žanrih.
-    """
-    cur.execute("DELETE FROM pripada;")
-    cur.execute("DELETE FROM zanr;")
-    zanri = {}
-    with open('podatki/zanri.csv') as datoteka:
-        podatki = csv.reader(datoteka)
-        stolpci = next(podatki)
-        z = stolpci.index('zanr')
-        poizvedba = """
-            INSERT INTO pripada VALUES ({})
-        """.format(', '.join(["?"] * len(stolpci)))
-        poizvedba_zanr = "INSERT INTO zanr (naziv) VALUES (?);"
-        for vrstica in podatki:
-            zanr = vrstica[z]
-            if zanr not in zanri:
-                cur.execute(poizvedba_zanr, [zanr])
-                zanri[zanr] = cur.lastrowid
-            vrstica[z] = zanri[zanr]
-            cur.execute(poizvedba, vrstica)
-
-@commit
 def ustvari_bazo(cur):
     """
     Opravi celoten postopek postavitve baze.
     """
-    pobrisi_tabele.nocommit(cur)
-    ustvari_tabele.nocommit(cur)
-    uvozi_filme.nocommit(cur)
-    uvozi_osebe.nocommit(cur)
-    uvozi_vloge.nocommit(cur)
-    uvozi_zanre.nocommit(cur)
+    pobrisi_tabele(cur)
+    ustvari_tabele(cur)
+    uvozi_izdelke(cur)
+    uvozi_partnerje(cur)
+    uvozi_ponudbo(cur)
+    uvozi_narocila(cur)
+    uvozi_kosarico(cur)
 
-def ustvari_bazo_ce_ne_obstaja():
+def ustvari_bazo_ce_ne_obstaja(cur):
     """
     Ustvari bazo, če ta še ne obstaja.
     """
     cur = conn.execute("SELECT COUNT(*) FROM sqlite_master")
     if cur.fetchone() == (0, ):
-        ustvari_bazo()
+        ustvari_bazo(cur)
