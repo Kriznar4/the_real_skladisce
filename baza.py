@@ -96,20 +96,16 @@ def uvozi_izdelke(cur):
             cur.execute(poizvedba, vrstica)
 
 def uvozi_kosarico(cur):
-    #TODO: popravi to funkcijo
     """
-    Uvozi podatke o kosarici.
+    Uvozi podatke o kosarici. Če ni izdelka še v ponudbi s tem partnerjem naj bi ga dodali.
     """
     cur.execute("DELETE FROM kosarica;")
-    pari_ponudbe = cur.execute("""
-        SELECT * FROM ponudba
-        """)
     with open('podatki/kosarica.csv') as datoteka:
         podatki = csv.reader(datoteka)
         stolpci = next(podatki)
         ind_sifra_izdelka = stolpci.index('sifra_izdelka')
         ind_st_narocila = stolpci.index('st_narocila')
-        ind_stolpci_narocila = cur.execute("""PRAGMA table_info(narocila);""").index('partner')
+        ind_partner_iz_narocila = cur.execute("""PRAGMA table_info(narocila);""").index('partner')
         poizvedba = """
             INSERT INTO izdelki VALUES ({})
         """.format(', '.join(["?"] * len(stolpci))) 
@@ -121,15 +117,19 @@ def uvozi_kosarico(cur):
             FROM narocila 
             WHERE st_narocila == ?
         """
-        ponudba = cur.execute(poizvedba_ponudba)
+        poizvedba_pari_ponudbe = cur.execute("""
+            SELECT partner, izdelek 
+            FROM ponudba
+            WHERE partner == ? 
+            AND izdelek = ?
+        """)
+        ponudba = cur.execute(poizvedba_pari_ponudbe)
         for vrstica in podatki:
             sifra_izdelka = vrstica[ind_sifra_izdelka]
             st_narocila = vrstica[ind_st_narocila]
-            narocilo = 
-
-            if ()
-            # TODO: preveri če so izdelki v že ponudbi in če niso jih dodaj
-
+            partner = cur.execute(poizvedba_narocilo, [st_narocila])
+            if  (partner, sifra_izdelka) not in cur.execute(poizvedba_pari_ponudbe, [partner, sifra_izdelka]):
+                ponudba.append((partner, sifra_izdelka))
             cur.execute(poizvedba, vrstica)
 
 def uvozi_partnerje(cur):
