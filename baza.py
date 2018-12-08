@@ -116,10 +116,16 @@ def uvozi_kosarico(cur):
         poizvedba_ponudba = """
             INSERT INTO ponudba (?, ?)
         """
+        poizvedba_narocilo = """
+            SELECT partner 
+            FROM narocila 
+            WHERE st_narocila == ?
+        """
         ponudba = cur.execute(poizvedba_ponudba)
         for vrstica in podatki:
             sifra_izdelka = vrstica[ind_sifra_izdelka]
             st_narocila = vrstica[ind_st_narocila]
+            narocilo = 
 
             if ()
             # TODO: preveri če so izdelki v že ponudbi in če niso jih dodaj
