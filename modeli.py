@@ -21,28 +21,12 @@ def commit(fun):
     funkcija.nocommit = fun
     return funkcija
 
-
-def poisci_podatke(id_filma):
-    '''
-    Vrne podatke o filmu z danim IDjem
-
-    Če film ne obstaja, vrne None, sicer vrne nabor:
-        naslov, leto, dolžina, ocena, žanri
-    pri čemer so žanri predstavljeni s seznamom nizov.
-    '''
+#TODO: napiši funkcije za dodajanje v tabele
+def dodaj_vlogo(id_osebe, id_filma, id_vloge):
     poizvedba = """
-        SELECT naslov, leto, dolzina, ocena FROM film WHERE id = ?
+        INSERT INTO nastopa
+        (oseba, film, vloga)
+        VALUES (?, ?, ?)
     """
-    cur = conn.cursor()
-    cur.execute(poizvedba, [id_filma])
-    osnovni_podatki = cur.fetchone()
-    if osnovni_podatki is None:
-        return None
-    else:
-        naslov, leto, dolzina, ocena = osnovni_podatki
-        poizvedba_za_zanre = """
-            SELECT zanr.naziv FROM zanr JOIN pripada ON zanr.id = pripada.zanr WHERE pripada.film = ?
-        """
-        cur.execute(poizvedba_za_zanre, [id_filma])
-        zanri = [vrstica[0] for vrstica in cur.fetchall()]
-        return naslov, leto, dolzina, ocena, zanri
+    with conn:
+        conn.execute(poizvedba, [id_osebe, id_filma, id_vloge])

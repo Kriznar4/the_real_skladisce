@@ -1,7 +1,6 @@
 import csv
-from modeli import conn, commit
+import sqlite3
 
-@commit
 def pobrisi_tabele(cur):
     """
     Pobriše tabele iz baze.
@@ -12,7 +11,6 @@ def pobrisi_tabele(cur):
     cur.execute("DROP TABLE IF EXISTS ponudba;")
     cur.execute("DROP TABLE IF EXISTS kosarica;")
 
-@commit
 def ustvari_tabele(cur):
     """
     Ustvari tabele v bazi.
@@ -190,6 +188,9 @@ def ustvari_bazo_ce_ne_obstaja(cur):
     """
     Ustvari bazo, če ta še ne obstaja.
     """
-    cur = conn.execute("SELECT COUNT(*) FROM sqlite_master")
+    cur = cur.execute("SELECT COUNT(*) FROM sqlite_master")
     if cur.fetchone() == (0, ):
         ustvari_bazo(cur)
+
+cur = sqlite3.connect('filmi.db')
+ustvari_bazo_ce_ne_obstaja(cur)
