@@ -15,6 +15,7 @@ def ustvari_tabele(cur):
     """
     Ustvari tabele v bazi.
     """
+    #TODO: popravi bazo unique
     cur.execute("""
     CREATE TABLE izdelki (
         sifra              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,11 +25,7 @@ def ustvari_tabele(cur):
         kolicina           INTEGER CHECK (kolicina >= 0),
         opis               STRING,
         tip_izdelka        STRING,
-        opomnik            INTEGER DEFAULT (3),
-        UNIQUE (
-            ime,
-            velikost_pakiranja
-        )
+        opomnik            INTEGER DEFAULT (3)
     );
     """)
 
@@ -41,11 +38,11 @@ def ustvari_tabele(cur):
         komentar       STRING
     );
     """)
-
+    #TODO: popravi ddv
     cur.execute("""
     CREATE TABLE partnerji (
         sifra   INTEGER PRIMARY KEY AUTOINCREMENT,
-        ddv     INTEGER UNIQUE,
+        ddv     STRING,
         ime     STRING,
         naslov  STRING,
         telefon,
@@ -103,31 +100,31 @@ def uvozi_kosarico(cur):
         stolpci = next(podatki)
         ind_sifra_izdelka = stolpci.index('sifra_izdelka')
         ind_st_narocila = stolpci.index('st_narocila')
-        ind_partner_iz_narocila = cur.execute("""PRAGMA table_info(narocila);""").index('partner')
+        ind_partner_iz_narocila = [r[1] for r in cur.execute("""PRAGMA table_info(narocila);""")].index('partner')
         poizvedba = """
-            INSERT INTO izdelki VALUES ({})
+            INSERT INTO kosarica VALUES ({})
         """.format(', '.join(["?"] * len(stolpci))) 
         poizvedba_ponudba = """
-            INSERT INTO ponudba (?, ?)
+            INSERT INTO ponudba VALUES (?, ?)
         """
         poizvedba_narocilo = """
             SELECT partner 
             FROM narocila 
-            WHERE st_narocila == ?
+            WHERE st_narocila = ?
         """
-        poizvedba_pari_ponudbe = cur.execute("""
+        poizvedba_pari_ponudbe = """
             SELECT partner, izdelek 
             FROM ponudba
-            WHERE partner == ? 
-            AND izdelek = ?
-        """)
-        ponudba = cur.execute(poizvedba_pari_ponudbe)
+        """
+        ponudba = cur.execute(poizvedba_pari_ponudbe).fetchall()
         for vrstica in podatki:
             sifra_izdelka = vrstica[ind_sifra_izdelka]
             st_narocila = vrstica[ind_st_narocila]
-            partner = cur.execute(poizvedba_narocilo, [st_narocila])
-            if  (partner, sifra_izdelka) not in cur.execute(poizvedba_pari_ponudbe, [partner, sifra_izdelka]):
-                ponudba.append((partner, sifra_izdelka))
+            partner = cur.execute(poizvedba_narocilo, [st_narocila]).fetchone()[0]
+            par = (partner, int(sifra_izdelka))
+            if par not in ponudba:
+                cur.execute(poizvedba_ponudba, par)
+                ponudba.append(par)
             cur.execute(poizvedba, vrstica)
 
 def uvozi_partnerje(cur):
@@ -139,7 +136,7 @@ def uvozi_partnerje(cur):
         podatki = csv.reader(datoteka)
         stolpci = next(podatki)
         poizvedba = """
-            INSERT INTO izdelki VALUES ({})
+            INSERT INTO partnerji VALUES ({})
         """.format(', '.join(["?"] * len(stolpci))) 
         for vrstica in podatki:
             cur.execute(poizvedba, vrstica)
@@ -153,7 +150,7 @@ def uvozi_ponudbo(cur):
         podatki = csv.reader(datoteka)
         stolpci = next(podatki)
         poizvedba = """
-            INSERT INTO izdelki VALUES ({})
+            INSERT INTO ponudba VALUES ({})
         """.format(', '.join(["?"] * len(stolpci))) 
         for vrstica in podatki:
             cur.execute(poizvedba, vrstica)
@@ -162,8 +159,8 @@ def uvozi_narocila(cur):
     """
     uvozi podatke o narocilih.
     """
-    cur.execute("DELETE FROM naroila;")
-    with open('podatki/ponudba.csv') as datoteka:
+    cur.execute("DELETE FROM narocila;")
+    with open('podatki/narocila.csv') as datoteka:
         podatki = csv.reader(datoteka)
         stolpci = next(podatki)
         poizvedba = """
@@ -188,9 +185,14 @@ def ustvari_bazo_ce_ne_obstaja(cur):
     """
     Ustvari bazo, če ta še ne obstaja.
     """
-    cur = cur.execute("SELECT COUNT(*) FROM sqlite_master")
-    if cur.fetchone() == (0, ):
-        ustvari_bazo(cur)
+    with cur:
+        cur = cur.execute("SELECT COUNT(*) FROM sqlite_master")
+        if cur.fetchone() == (0, ):
+            ustvari_bazo(cur)
 
-cur = sqlite3.connect('filmi.db')
+cur = sqlite3.connect('evidenca_narocil.db')
 ustvari_bazo_ce_ne_obstaja(cur)
+cur.execute('PRAGMA foreign_keys = ON')
+izd = cur.execute("""SELECT * FROM partnerji""").fetchall()
+print(izd)
+
