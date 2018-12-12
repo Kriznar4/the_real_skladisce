@@ -194,5 +194,5 @@ cur = sqlite3.connect('evidenca_narocil.db')
 ustvari_bazo_ce_ne_obstaja(cur)
 cur.execute('PRAGMA foreign_keys = ON')
 izd = cur.execute("""SELECT * FROM partnerji""").fetchall()
-print(izd)
+
 
