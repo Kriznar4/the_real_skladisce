@@ -88,7 +88,7 @@ def uvozi_izdelke(cur):
             INSERT INTO izdelki VALUES ({})
         """.format(', '.join(["?"] * len(stolpci))) 
         for vrstica in podatki:
-            cur.execute(poizvedba, vrstica)
+            cur.execute(poizvedba, vnesi_none(vrstica))
 
 def uvozi_kosarico(cur):
     """
@@ -125,7 +125,7 @@ def uvozi_kosarico(cur):
             if par not in ponudba:
                 cur.execute(poizvedba_ponudba, par)
                 ponudba.append(par)
-            cur.execute(poizvedba, vrstica)
+            cur.execute(poizvedba, vnesi_none(vrstica))
 
 def uvozi_partnerje(cur):
     """
@@ -139,7 +139,7 @@ def uvozi_partnerje(cur):
             INSERT INTO partnerji VALUES ({})
         """.format(', '.join(["?"] * len(stolpci))) 
         for vrstica in podatki:
-            cur.execute(poizvedba, vrstica)
+            cur.execute(poizvedba, vnesi_none(vrstica))
 
 def uvozi_ponudbo(cur):
     """
@@ -153,7 +153,7 @@ def uvozi_ponudbo(cur):
             INSERT INTO ponudba VALUES ({})
         """.format(', '.join(["?"] * len(stolpci))) 
         for vrstica in podatki:
-            cur.execute(poizvedba, vrstica)
+            cur.execute(poizvedba, vnesi_none(vrstica))
 
 def uvozi_narocila(cur):
     """
@@ -167,7 +167,14 @@ def uvozi_narocila(cur):
             INSERT INTO narocila VALUES ({})
         """.format(', '.join(["?"] * len(stolpci)))
         for vrstica in podatki:
-            cur.execute(poizvedba, vrstica)
+            cur.execute(poizvedba, vnesi_none(vrstica))
+
+def vnesi_none(tab):
+    """
+    Elemente, kjer nastopa prazen niz zamenja z None in vrne novo popravljeno tabelo.
+    """
+    nova_tab = [el if el != '' else None for el in tab]
+    return nova_tab
 
 def ustvari_bazo(cur):
     """
@@ -189,10 +196,5 @@ def ustvari_bazo_ce_ne_obstaja(cur):
         cur = cur.execute("SELECT COUNT(*) FROM sqlite_master")
         if cur.fetchone() == (0, ):
             ustvari_bazo(cur)
-
-cur = sqlite3.connect('evidenca_narocil.db')
-ustvari_bazo_ce_ne_obstaja(cur)
-cur.execute('PRAGMA foreign_keys = ON')
-izd = cur.execute("""SELECT * FROM partnerji""").fetchall()
 
 
