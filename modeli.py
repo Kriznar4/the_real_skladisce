@@ -1,6 +1,8 @@
 import sqlite3
-#--------------------------------------------------------------še ni spremenjeno------------------------------------------------------------
-conn = sqlite3.connect('filmi.db')
+import baza
+
+conn = sqlite3.connect('evidenca_narocil.db')
+baza.ustvari_bazo_ce_ne_obstaja(conn)
 conn.execute('PRAGMA foreign_keys = ON')
 
 def commit(fun):
@@ -21,12 +23,40 @@ def commit(fun):
     funkcija.nocommit = fun
     return funkcija
 
-#TODO: napiši funkcije za dodajanje v tabele
-def dodaj_vlogo(id_osebe, id_filma, id_vloge):
-    poizvedba = """
-        INSERT INTO nastopa
-        (oseba, film, vloga)
-        VALUES (?, ?, ?)
+def koliko_izdelkov_v_skladiscu():
     """
-    with conn:
-        conn.execute(poizvedba, [id_osebe, id_filma, id_vloge])
+    Vrne stevilo razlicnih izdelkov v skladiscu.
+
+    >>> koliko_izdelkov_v_skladiscu()
+    18
+    """
+    poizvedba = """
+        SELECT COUNT(*)
+        FROM izdelki
+        WHERE kolicina IS NOT null
+    """
+    st, = conn.execute(poizvedba).fetchone()
+    return st
+
+def podatki_skladisca():
+    """
+    Vrne podatke o izdelkih v skladišču.
+    """
+    poizvedba = """
+        SELECT sifra, ime, velikost_pakiranja, enota, kolicina, tip_izdelka
+        FROM izdelki
+        WHERE kolicina IS NOT null
+    """
+    return conn.execute(poizvedba).fetchall()
+
+def poisci_izdelek_ime(ime_vnos):
+    """
+    Poišče izdelke le na podlagi imena.
+    """
+    poizvedba = """
+        SELECT sifra, ime, velikost_pakiranja, enota, tip_izdelka
+        FROM izdelki
+        WHERE ime LIKE ?
+    """
+    return conn.execute(poizvedba, ['%' + ime_vnos + '%']).fetchall()
+
