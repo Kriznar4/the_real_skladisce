@@ -52,10 +52,17 @@ def iz_skladisca():
     """
     """
     iskani= input('Vnesi ime izdelka, ki si vzel iz skladisca: \n')
-    
+    izdelki = 
+
 
 
     return
+def izberi_izdelek():
+    """
+    
+    """
+
+
 
 def skladisce():
     """
