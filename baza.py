@@ -15,7 +15,6 @@ def ustvari_tabele(cur):
     """
     Ustvari tabele v bazi.
     """
-    #TODO: popravi bazo unique
     cur.execute("""
     CREATE TABLE izdelki (
         sifra              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +37,6 @@ def ustvari_tabele(cur):
         komentar       STRING
     );
     """)
-    #TODO: popravi ddv
     cur.execute("""
     CREATE TABLE partnerji (
         sifra   INTEGER PRIMARY KEY AUTOINCREMENT,
