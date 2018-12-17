@@ -1,5 +1,6 @@
 import sqlite3
 import baza
+import datetime
 
 conn = sqlite3.connect('evidenca_narocil.db')
 baza.ustvari_bazo_ce_ne_obstaja(conn)
@@ -41,6 +42,7 @@ def koliko_izdelkov_v_skladiscu():
 def podatki_skladisca():
     """
     Vrne podatke o izdelkih v skladišču.
+    
     """
     poizvedba = """
         SELECT sifra, ime, velikost_pakiranja, enota, kolicina, tip_izdelka
@@ -60,3 +62,33 @@ def poisci_izdelek_ime(ime_vnos):
     """
     return conn.execute(poizvedba, ['%' + ime_vnos + '%']).fetchall()
 
+def poisci_partner_ime(ime_vnos):
+    """
+    Poišče izdelke le na podlagi imena.
+    """
+    poizvedba = """
+        SELECT sifra
+        FROM partnerji
+        WHERE ime LIKE ?
+    """
+    sifra, = conn.execute(poizvedba, ['%' + ime_vnos + '%']).fetchone()
+    return sifra
+
+def v_narocila(partner, komentar = None, datum_narocila = datetime.datetime.now().strftime("%d/%m/%Y")):
+    """
+    Vstavi podatke samo v naročila.
+    """
+    poizvedba = """
+        INSERT INTO narocila
+        (datum_narocila, partner, komentar)
+        VALUES (?, ?, ?)
+    """
+    with conn:
+        conn.execute(poizvedba, [datum_narocila, partner, komentar])
+
+def v_kosarico(st_narocila, sifra_izdelka, cena, popust = 0, kolicina = None, datum_prejetja = None):
+    """
+    Vstavi v košarico.
+    """
+
+print(poisci_izdelek_ime('li'))
