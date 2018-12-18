@@ -119,4 +119,14 @@ def v_kosarico(st_narocila, sifra_izdelka, cena, popust = 0, kolicina = None, da
     """
     return
 
-print(izdelek_podatki(12))
+def posodobitev_v_skladišču(sifra,ime,velikost_pakiranja,enota,kolicina,opis,tip_izdelka,opomnik):
+    """
+    Spremeni vrednosti za obstoječ izdelek v skladišču.
+    """
+    poizvedba = """
+        UPDATE izdelki
+        SET ime=?,velikost_pakiranja=?,enota=?,kolicina=?,opis=?,tip_izdelka=?,opomnik=?
+    """
+    with conn:
+        conn.execute(poizvedba, [sifra,ime,velikost_pakiranja,enota,kolicina,opis,tip_izdelka,opomnik])
+
