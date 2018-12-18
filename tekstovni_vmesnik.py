@@ -50,12 +50,15 @@ def novo_narocilo():
 
 def iz_skladisca():
     """
+    Odšteje količino izdelka, ki smo ga vzeli iz skladišča
     """
     iskani= input('Vnesi ime izdelka, ki si vzel iz skladisca: \n')
-    
-
-
+    izberi_moznost(modeli.poisci_izdelek_ime(iskani))
     return
+    
+iz_skladisca()
+
+
 
 def skladisce():
     """
@@ -113,3 +116,4 @@ def main():
 
 
 main()
+

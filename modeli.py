@@ -91,4 +91,15 @@ def v_kosarico(st_narocila, sifra_izdelka, cena, popust = 0, kolicina = None, da
     Vstavi v košarico.
     """
 
+def posodobitev_v_skladišču(sifra,ime,velikost_pakiranja,enota,kolicina,opis,tip_izdelka,opomnik):
+    """
+    Spremeni vrednosti za obstoječ izdelek v skladišču.
+    """
+    poizvedba = """
+        UPDATE izdelki
+        SET ime=?,velikost_pakiranja=?,enota=?,kolicina=?,opis=?,tip_izdelka=?,opomnik=?
+    """
+    with conn:
+        conn.execute(poizvedba, [sifra,ime,velikost_pakiranja,enota,kolicina,opis,tip_izdelka,opomnik])
+
 print(poisci_izdelek_ime('li'))
