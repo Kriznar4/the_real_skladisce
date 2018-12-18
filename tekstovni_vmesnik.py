@@ -1,4 +1,5 @@
 import modeli
+import datetime
 
 
 MAX_REZULTATOV_ISKANJA = 15
@@ -45,20 +46,87 @@ def izberi_moznost(moznosti):
 
 def novo_narocilo():
     """
+
     """
+    vnos_ime_partnerja = input("Vnesi ime parnerja: ")
+    moznosti_partner = modeli.partnerji_podatki(modeli.poisci_partner(vnos_ime_partnerja))
+    izbira_partner = izberi_moznost(moznosti_partner)
+    if izbira_partner is None:
+        modeli.nov_partner(vnos_ime_partnerja)
+        sifra = modeli.poisci_partner(vnos_ime_partnerja)
+        izbrani_partner = modeli.partnerji_podatki(sifra)
+    else:
+        izbrani_partner = moznosti_partner[izbira_partner]
+    sifra_partner = izbrani_partner[0]
+
+
+    vnos_datum_narocila = input('Vnesi datum narocila (mm/dd/yy) ali pritisni enter za današnji dan: ')
+    if vnos_datum_narocila =='':
+        vnos_datum_narocila = datetime.datetime.now().strftime("%m/%d/%Y")
+    vnos_komentar = input('Vnesi komentar naročila: ')
+    if vnos_komentar == '':
+        vnos_komentar = None
+    modeli.novo_narocilo(vnos_datum_narocila, sifra_partner, vnos_komentar)
+    st_narocila = modeli.vrni_sifra_zadnje_narocilo()
+    print('---------------{}'.format(st_narocila))
+
+
+    
+    ali_nadaljujem = 1
+    while ali_nadaljujem:
+        vnos_ime_izdelka = input("Vnesi ime izdelka: ")
+        moznosti_izdelek = modeli.izdelki_podatki(modeli.poisci_izdelek(vnos_ime_izdelka))
+        izbira_izdelka = izberi_moznost(moznosti_izdelek)
+        if izbira_izdelka is None:
+            v_skladisce = izberi_moznost(['Izdelek bo v skaldišču.', 'Izdelka ne bo v skladišču.'])
+            if v_skladisce == 0:
+                kolicina = 0
+            else:
+                kolicina = None
+            opis = input('Dodaj opis izdelka: ')
+            tip_izdelka = input('Dodaj tip izdelka: ')
+            opomnik = input('Dodaj opomnik: ')
+            modeli.nov_izdelek(vnos_ime_izdelka, None, None, kolicina, opis, tip_izdelka, opomnik)
+            sifra = modeli.poisci_izdelek(vnos_ime_izdelka)
+            izbrani_izdelek = modeli.izdelki_podatki(sifra)[0]
+        else:
+            izbrani_izdelek = moznosti_izdelek[izbira_izdelka]
+        sifra_izdelka = izbrani_izdelek[0]
+        print('---------------{}'.format(sifra_izdelka))
+
+        kolicina = input('Koliko paketov izdelka bomo kupili: ')
+        cena = input('Kolikšna je cena enega paketa: ')
+        popust = input('Popust v procentih: ')
+        datum_prejetja = input('Vnesi datum prejetja (mm/dd/yy) ali pritisni enter če izdelka še nisi prejel: ')
+        if datum_prejetja == '':
+            datum_prejetja = None
+        modeli.nov_izdelek_v_kosarico(st_narocila,sifra_izdelka,cena,popust,kolicina,datum_prejetja)
+
+
+        ali_nadaljujem = izberi_moznost(['Nimam več izdelkov.', 'Dodaj nov izdelek.'])
+
     return
 
 def iz_skladisca():
     """
     Odšteje količino izdelka, ki smo ga vzeli iz skladišča
     """
-    iskani= input('Vnesi ime izdelka, ki si vzel iz skladisca: \n')
-    izberi_moznost(modeli.poisci_izdelek_ime(iskani))
+    iskani = input('Vnesi ime izdelka, ki si vzel iz skladisca: \n')
+    izbira = izberi_moznost(moznosti)
+    izbrani = moznosti[izbira]
+    print("spremenili boste količino izdelka: " + str(izbrani))
+    v_skladiscu = izbrani[4]
+    koliko = int(input('Koliko pakiranj si vzel iz skladišča: '))
+    if koliko > v_skladiscu:
+        print("Toliko izdelkov ni nikoli bilo v skladišču!! V skladišču je bilo toliko izdelkov: {}.".format(v_skladiscu))
+        return
+    nova_kolicina = v_skladiscu-koliko
+    modeli.posodobitev_v_skladišču(izbrani[0], nova_kolicina)
+    opomnik = izbrani[-1]
+    if nova_kolicina < opomnik:
+        print("OPOMNIK: Količina vašega izdelka vam je padla pod {}. Imate samo še {} paketov izdelka.\n Naroči si izdelek.".format(opomnik, nova_kolicina))
     return
     
-iz_skladisca()
-
-
 
 def skladisce():
     """
