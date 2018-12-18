@@ -1,4 +1,4 @@
-st_narocila,sifra_izdelka,cena,popust,kolicina,datum prejetja
+st_narocila,sifra_izdelka,cena,popust,kolicina,datum_prejetja
 19,15,777.0,13.8,10,2/11/2018
 31,24,471.43,70.47,3,9/21/2018
 37,28,923.67,20.76,1,10/26/2018
