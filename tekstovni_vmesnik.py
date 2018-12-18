@@ -112,7 +112,7 @@ def iz_skladisca():
     Odšteje količino izdelka, ki smo ga vzeli iz skladišča
     """
     iskani = input('Vnesi ime izdelka, ki si vzel iz skladisca: \n')
-    moznosti = modeli.izdelki_podatki(modeli.poisci_izdelek(iskani))
+    moznosti = modeli.izdelki_podatki(modeli.poisci_v_skladiscu(iskani))
     izbira = izberi_moznost(moznosti)
     izbrani = moznosti[izbira]
     print("spremenili boste količino izdelka: " + str(izbrani))

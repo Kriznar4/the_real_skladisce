@@ -62,6 +62,18 @@ def poisci_izdelek(ime_vnos):
     """
     return [sifra for sifra, in conn.execute(poizvedba, ['%' + ime_vnos + '%']).fetchall()]
 
+def poisci_v_skladiscu(ime_vnos):
+    """
+    Poišče izdelke le na podlagi imena. Vrne seznam šifer.
+    """
+    poizvedba = """
+        SELECT sifra
+        FROM izdelki
+        WHERE ime LIKE ?
+        AND kolicina IS NOT null
+    """
+    return [sifra for sifra, in conn.execute(poizvedba, ['%' + ime_vnos + '%']).fetchall()]
+
 def poisci_partner(ime_vnos):
     """
     Poišče izdelke le na podlagi imena. Vrne seznam šifer.
