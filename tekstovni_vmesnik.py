@@ -68,7 +68,6 @@ def novo_narocilo():
         vnos_komentar = None
     modeli.novo_narocilo(vnos_datum_narocila, sifra_partner, vnos_komentar)
     st_narocila = modeli.vrni_sifra_zadnje_narocilo()
-    print('---------------{}'.format(st_narocila))
 
 
     
@@ -92,7 +91,6 @@ def novo_narocilo():
         else:
             izbrani_izdelek = moznosti_izdelek[izbira_izdelka]
         sifra_izdelka = izbrani_izdelek[0]
-        print('---------------{}'.format(sifra_izdelka))
 
         kolicina = input('Koliko paketov izdelka bomo kupili: ')
         cena = input('Kolikšna je cena enega paketa: ')
@@ -161,7 +159,6 @@ def pokazi_moznosti():
         'Novo naročilo',
         'Porabil iz skladišča',
         'Pokaži skladišče',
-        'Prikaži neprejete pošilke',
         'izhod',
     ])
     if izbira == 0:
@@ -170,8 +167,6 @@ def pokazi_moznosti():
         iz_skladisca()
     elif izbira == 2:
         skladisce()
-    elif izbira == 3:
-        neprejete_posilke()
     else:
         print('Nasvidenje!')
         exit()
