@@ -20,16 +20,11 @@ def glavna_stran():
 @get('/poglej-skladišče/')
 def poglej_skladisce():
     izdelki = modeli.podatki_skladisca()
-    lastnosti = ['ID: ', 'Ime: ', 'Količina pakiranja: ',  'Enota pakiranja: ', 'Zaloga: ', 'Tip: ']
-    seznam_nizov = list()
-    for izdelek in izdelki:
-        niz = '|'
-        for i in range(len(lastnosti)):
-            niz = niz + str(lastnosti[i]) + str(izdelek[i]) + '|'
-        seznam_nizov.append(niz)
+    lastnosti = ['ID', 'Ime', 'Količina pakiranja',  'Enota pakiranja', 'Zaloga', 'Tip']
     return template(
         'pokazi_skladisce',
-        izdelki = seznam_nizov
+        lastnosti = lastnosti,
+        izdelki = izdelki
     )
 
     
