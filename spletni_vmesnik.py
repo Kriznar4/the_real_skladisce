@@ -20,7 +20,7 @@ def glavna_stran():
 @get('/poglej-skladišče/')
 def poglej_skladisce():
     izdelki = modeli.podatki_skladisca()
-    lastnosti = ['ID', 'Ime', 'Količina pakiranja',  'Enota pakiranja', 'Zaloga', 'Tip']
+    lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
     return template(
         'pokazi_skladisce',
         lastnosti = lastnosti,

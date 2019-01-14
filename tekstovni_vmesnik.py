@@ -135,16 +135,11 @@ def skladisce():
 
     print('Vaše skladišče izgleda takole: \n')
     for izdelek in skladisce:
-        sifra, ime, velikost_pakiranja, enota, kolicina, tip_izdelka = izdelek
-        if velikost_pakiranja is None:
-            enota = ''
-            velikost_pakiranja = ''
-        elif enota is None:
-            enota = ''
+        sifra, ime, kolicina, tip_izdelka = izdelek
         if tip_izdelka is None:
             tip_izdelka = 'Brez tipa'
 
-        print('|  Šifra: {}  |  Izdelek: {} {}{}  |   Količina: {}  |   Tip izdelka: {}  |'.format(sifra, ime, velikost_pakiranja, enota, kolicina, tip_izdelka))
+        print('|  Šifra: {}  |  Izdelek: {}  |   Količina: {}  |   Tip izdelka: {}  |'.format(sifra, ime, kolicina, tip_izdelka))
     return
 
 def neprejete_posilke():

@@ -19,8 +19,6 @@ def ustvari_tabele(cur):
     CREATE TABLE izdelki (
         sifra              INTEGER PRIMARY KEY AUTOINCREMENT,
         ime                STRING  NOT NULL,
-        velikost_pakiranja INTEGER CHECK (kolicina >= 0),
-        enota              STRING  DEFAULT X,
         kolicina           INTEGER CHECK (kolicina >= 0),
         opis               STRING,
         tip_izdelka        STRING,

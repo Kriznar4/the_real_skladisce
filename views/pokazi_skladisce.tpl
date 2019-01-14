@@ -2,7 +2,7 @@
 
 <h1 class="title">Takole izgleda vaše skladišče:</h1>
 
-<table border = 5>
+<table border = 5, cellpadding = "10">
     <tr>
         %for tip_lastnosti in lastnosti:
             <th>

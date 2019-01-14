@@ -45,7 +45,7 @@ def podatki_skladisca():
     
     """
     poizvedba = """
-        SELECT sifra, ime, velikost_pakiranja, enota, kolicina, tip_izdelka
+        SELECT sifra, ime, kolicina, tip_izdelka
         FROM izdelki
         WHERE kolicina IS NOT null
     """
@@ -89,13 +89,11 @@ def izdelek_podatki(sifra):
     """
     Vrne podatke o izdelku z dano šifro.
 
-    [sifra, ime, velikost_pakiranja, enota, kolicina, opis, tip_izdelka, opomnik]
+    [sifra, ime, kolicina, opis, tip_izdelka, opomnik]
     """
     poizvedba = """
         SELECT sifra, 
-               ime, 
-               velikost_pakiranja, 
-               enota, 
+               ime,  
                kolicina, 
                opis, 
                tip_izdelka, 
@@ -110,15 +108,13 @@ def izdelki_podatki(tab_sifr):
     """
     Vrne podatke o izdelku z dane šifre.
 
-    [sifra, ime, velikost_pakiranja, enota, kolicina, opis, tip_izdelka, opomnik]
+    [sifra, ime, kolicina, opis, tip_izdelka, opomnik]
     """
     podatki=list()
     for sifra in tab_sifr:
         poizvedba = """
             SELECT sifra, 
-                ime, 
-                velikost_pakiranja, 
-                enota, 
+                ime,  
                 kolicina, 
                 opis, 
                 tip_izdelka, 
@@ -212,7 +208,7 @@ def nov_partner(ime,ddv=None,naslov=None,telefon=None,email=None):
 def nov_izdelek(ime,velikost_pakiranja=None,enota=None,kolicina=None,opis=None,tip_izdelka=None,opomnik=None):
     poizvedba = """
         INSERT INTO izdelki
-        (ime,velikost_pakiranja,enota,kolicina,opis,tip_izdelka,opomnik)
+        (ime,kolicina,opis,tip_izdelka,opomnik)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     """
     with conn:
