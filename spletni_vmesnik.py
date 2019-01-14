@@ -27,6 +27,40 @@ def poglej_skladisce():
         izdelki = izdelki
     )
 
+@post('/poglej-skladišče/')
+def dodajanje_filma():
+    try:
+        id = modeli.dodaj_film(naslov=request.forms.naslov,
+                               dolzina=request.forms.dolzina,
+                               leto=request.forms.leto,
+                               ocena=request.forms.ocena,
+                               metascore=request.forms.metascore,
+                               glasovi=request.forms.glasovi,
+                               zasluzek=request.forms.zasluzek,
+                               opis=request.forms.opis,
+                               zanri=request.forms.getall('zanri'),
+                               igralci=request.forms.getall('igralci'),
+                               reziserji=request.forms.getall('reziserji'))
+    except:
+        zanri = modeli.seznam_zanrov()
+        osebe = modeli.seznam_oseb()
+        return template('dodaj_film',
+                        naslov=request.forms.naslov,
+                        dolzina=request.forms.dolzina,
+                        leto=request.forms.leto,
+                        ocena=request.forms.ocena,
+                        metascore=request.forms.metascore,
+                        glasovi=request.forms.glasovi,
+                        zasluzek=request.forms.zasluzek,
+                        opis=request.forms.opis,
+                        zanri=request.forms.getall('zanri'),
+                        igralci=request.forms.getall('igralci'),
+                        reziserji=request.forms.getall('reziserji'),
+                        vsi_zanri=zanri,
+                        vse_osebe=osebe,
+                        napaka=True)
+    redirect('/film/{}/'.format(id))
+
     
 
 
