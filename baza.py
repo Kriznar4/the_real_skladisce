@@ -175,6 +175,7 @@ def vnesi_none(tab):
 def ustvari_bazo(cur):
     """
     Opravi celoten postopek
+    """
     pobrisi_tabele(cur)
     ustvari_tabele(cur)
     uvozi_izdelke(cur)
