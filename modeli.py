@@ -103,12 +103,26 @@ def izdelek_podatki(sifra):
     """
     return conn.execute(poizvedba, [sifra]).fetchone()
 
-
-def izdelki_podatki(tab_sifr):
+def izdelki_podatki(tab_sifer:list):
     """
-    Vrne podatke o izdelku z dane šifre.
+    Vrne podatke o izdelkih iz tabele šifer.
+    """
 
-    [sifra, ime, kolicina, opis, tip_izdelka, opomnik]
+    poizvedba = ("""
+        SELECT sifra, 
+               ime,  
+               kolicina, 
+               opis, 
+               tip_izdelka, 
+               opomnik
+        FROM izdelki
+        WHERE sifra in (""" + '?, '*len(tab_sifer))[:-2] + ')'
+    return conn.execute(poizvedba, tab_sifer).fetchall()
+
+
+def izdelki_podatki_vsi():
+    """
+    Vrne podatke o vseh izdelkih.
     """
     podatki=list()
     for sifra in tab_sifr:
@@ -120,10 +134,8 @@ def izdelki_podatki(tab_sifr):
                 tip_izdelka, 
                 opomnik
             FROM izdelki
-            WHERE sifra = ?
         """
-        podatki.append(conn.execute(poizvedba, [sifra]).fetchone())
-    return podatki
+    return conn.execute(poizvedba).fetchall()
 
 
 def partner_podatki(sifra):
@@ -238,3 +250,5 @@ def vrni_sifra_zadnje_narocilo():
         FROM narocila
     """
     return conn.execute(poizvedba).fetchone()[0]
+
+print(izdelki_podatki((2, 4, 6)))
