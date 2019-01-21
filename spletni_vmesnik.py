@@ -63,7 +63,12 @@ def poglej_skladisce():
 #    redirect('/film/{}/'.format(id))
 
 @get(/spr-kolicino/)    
-
+def spremeni_kolicino():
+    return template(
+        'spr-kolicino'
+    )
+    
+    
 
 
 
