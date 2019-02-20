@@ -116,7 +116,7 @@ def izdelki_podatki(tab_sifer:list):
                tip_izdelka, 
                opomnik
         FROM izdelki
-        WHERE sifra in (""" + '?, '*len(tab_sifer))[:-2] + ')'
+        WHERE sifra IN (""" + ('?, '*len(tab_sifer)))[:-2] + ')'
     return conn.execute(poizvedba, tab_sifer).fetchall()
 
 
@@ -252,5 +252,3 @@ def vrni_sifra_zadnje_narocilo():
         FROM narocila
     """
     return conn.execute(poizvedba).fetchone()[0]
-
-print(izdelki_podatki((2, 4, 6)))

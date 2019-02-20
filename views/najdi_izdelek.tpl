@@ -1,15 +1,6 @@
-
 %rebase('osnova')
-<h1 class="title">Povečaj količino izdelka v skladišču:</h1>
 
-<form method="post">
-ID: <input type="text" name="id" value="{{id}}" /><br />
-Koliko sem dodal v skladišče: <input type="text" name="kolicina" value="{{kolicina}}" /><br />
-<p><br>{{!sporocilo}}<br></p>
-<input type="submit" value="Dodaj izdelek">
-</form>
-
-<h1 class="title">Takole izgleda vaše skladišče:</h1>
+<h1 class="title">Najdeni izdelki:</h1>
 <head>
 <style>
 table, th, td {
@@ -18,8 +9,13 @@ table, th, td {
 }
 </style>
 </head>
-%poravnave = ['left', 'left', 'center', 'center']
 
+<form method="post">
+Ime: <input type="text" name="ime" value="{{ime}}">
+<input type="submit" value="Izpiši">
+</form>
+
+%poravnave = ['left', 'left', 'center', 'center']
 <table border = 5>
     <tr>
         %for poravnava, tip_lastnosti in zip(poravnave, lastnosti):
@@ -38,7 +34,3 @@ table, th, td {
         </tr>
     %end
 </table>
-
-
-
-

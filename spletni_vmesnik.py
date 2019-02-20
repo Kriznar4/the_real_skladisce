@@ -4,7 +4,7 @@ import modeli
 
 moznosti = ['poglej skladišče', 'novo narocilo', 'preglej neprejete pošiljke', 
             'vpisi prejeto posiljko', 'spremeni količino izdelka v skladišču', 
-            'letni pregled porabe']
+            'letni pregled porabe', 'najdi izdelek']
 
 @get('/')
 def glavna_stran():
@@ -37,7 +37,6 @@ def spremeni_skladisce():
         lastnosti = lastnosti,
         izdelki = izdelki,
         id = "",
-        ime = "",
         kolicina = 0,
         sporocilo = sporocilo
     )
@@ -55,11 +54,33 @@ def spremenjanje_skladisce():
             lastnosti = lastnosti,
             izdelki = izdelki,
             id=request.forms.id,
-            ime=request.forms.ime,
             kolicina=request.forms.kolicina,
-            sporocilo="Nekaj ni šlo skozi! Mogoče si želel iz skladišča vzeti več izdelkov kot jih imaš! <br>"
+            sporocilo="Nekaj ni šlo skozi! <br>"
             )
     redirect('/spremeni količino izdelka v skladišču/')
+
+@get('/najdi izdelek/')
+def poglej_skladisce():
+    lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
+    izdelki = list()
+    return template(
+        'najdi_izdelek',
+        lastnosti = lastnosti,
+        izdelki = izdelki,
+        ime = ""
+    )
+
+@post('/najdi izdelek/')
+def poglejte_skladisce():
+    lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
+    izdelki2 = modeli.izdelki_podatki(modeli.poisci_izdelek(request.forms.ime))
+    izdelki = [[lastn for lastn, st in zip(izdelek, [0, 1, 2, 3, 4, 5]) if st in [0, 1, 2, 4] ] for izdelek in izdelki2]
+    return template(
+        'najdi_izdelek',
+        lastnosti = lastnosti,
+        izdelki = izdelki,
+        ime = request.forms.ime
+    )
 
 #@post('/poglej-skladišče/')
 #def dodajanje_filma():
