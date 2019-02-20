@@ -199,14 +199,16 @@ def v_kosarico(st_narocila, sifra_izdelka, cena, popust = 0, kolicina = None, da
 def posodobitev_v_skladišču(sifra, kolicina):
     """
     Spremeni vrednosti za obstoječ izdelek v skladišču.
+
+    Prištevanje česarkoli nullu vren null.
     """
     poizvedba = """
         UPDATE izdelki
-        SET kolicina=?
+        SET kolicina= (SELECT kolicina FROM izdelki WHERE sifra = ?) + ?
         WHERE sifra = ?
     """
     with conn:
-        conn.execute(poizvedba, [kolicina, sifra])
+        conn.execute(poizvedba, [sifra, kolicina, sifra])
 
 def nov_partner(ime,ddv=None,naslov=None,telefon=None,email=None):
     poizvedba = """

@@ -1,8 +1,8 @@
 import bottle
-from bottle import get, run, template
+from bottle import get, run, template, post, redirect, request
 import modeli
 
-moznosti = ['poglej-skladišče', 'novo narocilo', 'preglej neprejete pošiljke', 
+moznosti = ['poglej skladišče', 'novo narocilo', 'preglej neprejete pošiljke', 
             'vpisi prejeto posiljko', 'spremeni količino izdelka v skladišču', 
             'letni pregled porabe']
 
@@ -17,7 +17,7 @@ def glavna_stran():
         izbire = izbire
     )
 
-@get('/poglej-skladišče/')
+@get('/poglej skladišče/')
 def poglej_skladisce():
     izdelki = modeli.podatki_skladisca()
     lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
@@ -27,6 +27,39 @@ def poglej_skladisce():
         izdelki = izdelki
     )
 
+@get('/spremeni količino izdelka v skladišču/')
+def spremeni_skladisce():
+    izdelki = modeli.podatki_skladisca()
+    lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
+    sporocilo = "<br>"
+    return template(
+        'spr_kolicino',
+        lastnosti = lastnosti,
+        izdelki = izdelki,
+        id = "",
+        ime = "",
+        kolicina = 0,
+        sporocilo = sporocilo
+    )
+
+@post('/spremeni količino izdelka v skladišču/')
+def spremenjanje_skladisce():
+    izdelki = modeli.podatki_skladisca()
+    lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
+    try:
+        modeli.posodobitev_v_skladišču(request.forms.id,
+                                       request.forms.kolicina)
+    except:
+        return template(
+            'spr_kolicino',
+            lastnosti = lastnosti,
+            izdelki = izdelki,
+            id=request.forms.id,
+            ime=request.forms.ime,
+            kolicina=request.forms.kolicina,
+            sporocilo="Nekaj ni šlo skozi! Mogoče si želel iz skladišča vzeti več izdelkov kot jih imaš! <br>"
+            )
+    redirect('/spremeni količino izdelka v skladišču/')
 
 #@post('/poglej-skladišče/')
 #def dodajanje_filma():
@@ -62,11 +95,6 @@ def poglej_skladisce():
 #                        napaka=True)
 #    redirect('/film/{}/'.format(id))
 
-@get(/spr-kolicino/)    
-def spremeni_kolicino():
-    return template(
-        'spr-kolicino'
-    )
     
     
 
