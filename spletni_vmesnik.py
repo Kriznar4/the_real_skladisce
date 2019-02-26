@@ -2,7 +2,7 @@ import bottle
 from bottle import get, run, template, post, redirect, request
 import modeli
 
-moznosti = ['poglej skladišče', 'novo narocilo', 'preglej neprejete pošiljke', 
+moznosti = ['poglej skladišče','dodaj izdelek', 'novo narocilo', 'preglej neprejete pošiljke', 
             'vpisi prejeto posiljko', 'spremeni količino izdelka v skladišču', 
             'letni pregled porabe', 'najdi izdelek']
 
@@ -82,48 +82,48 @@ def poglejte_skladisce():
         ime = request.forms.ime
     )
 
-#@post('/poglej-skladišče/')
-#def dodajanje_filma():
-#    try:
-#        id = modeli.dodaj_film(naslov=request.forms.naslov,
-#                               dolzina=request.forms.dolzina,
-#                               leto=request.forms.leto,
-#                               ocena=request.forms.ocena,
-#                               metascore=request.forms.metascore,
-#                               glasovi=request.forms.glasovi,
-#                               zasluzek=request.forms.zasluzek,
-#                               opis=request.forms.opis,
-#                               zanri=request.forms.getall('zanri'),
-#                               igralci=request.forms.getall('igralci'),
-#                               reziserji=request.forms.getall('reziserji'))
-#    except:
-#        zanri = modeli.seznam_zanrov()
-#        osebe = modeli.seznam_oseb()
-#        return template('dodaj_film',
-#                        naslov=request.forms.naslov,
-#                        dolzina=request.forms.dolzina,
-#                        leto=request.forms.leto,
-#                        ocena=request.forms.ocena,
-#                        metascore=request.forms.metascore,
-#                        glasovi=request.forms.glasovi,
-#                        zasluzek=request.forms.zasluzek,
-#                        opis=request.forms.opis,
-#                        zanri=request.forms.getall('zanri'),
-#                        igralci=request.forms.getall('igralci'),
-#                        reziserji=request.forms.getall('reziserji'),
-#                        vsi_zanri=zanri,
-#                        vse_osebe=osebe,
-#                        napaka=True)
-#    redirect('/film/{}/'.format(id))
-
-    
-    
+@get('/novo narocilo/')
+def dodaj_narocilo():
+    imena_izdelkov = modeli.imena_izdelkov()
+    st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
+    return template('novo_narocilo',
+                    imena= imena_izdelkov,
+                    st_narocila=st_zadnjega_narocila+1,
+                    sifra=None,
+                    kolicina=0,
+                    cena=None,
+                    popust=None
+                    )
 
 
+@get('/dodaj izdelek/')
+def dodaj_izdelek():
+    tipi = modeli.tipi_izdelkov()
+    return template('dodaj_izdelek',
+                    ime="",
+                    kolicina=0,
+                    tip_izdelka="",
+                    tipi_izdelkov=tipi,
+                    opis="",
+                    opomnik=0)
 
-
-
-
-
+@post('/dodaj izdelek/')
+def dodaj_izdelek():
+    try:
+        modeli.nov_izdelek(request.forms.ime,
+                                request.forms.kolicina,
+                                request.forms.opis,
+                                request.forms.tip_izdelka,
+                                request.forms.opomnik)
+    except:
+        tipi = modeli.tipi_izdelkov()
+        return template('dodaj_izdelek',
+                        ime="",
+                        kolicina=0,
+                        tip_izdelka="",
+                        tipi_izdelkov=tipi,
+                        opis="",
+                        opomnik=0)
+    redirect('/')
 
 run(reloader=True, debug=True)

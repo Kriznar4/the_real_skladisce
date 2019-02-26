@@ -219,14 +219,14 @@ def nov_partner(ime,ddv=None,naslov=None,telefon=None,email=None):
     with conn:
         conn.execute(poizvedba, [ddv,ime,naslov,telefon,email])
 
-def nov_izdelek(ime,velikost_pakiranja=None,enota=None,kolicina=None,opis=None,tip_izdelka=None,opomnik=None):
+def nov_izdelek(ime,kolicina=None,opis=None,tip_izdelka=None,opomnik=None):
     poizvedba = """
         INSERT INTO izdelki
         (ime,kolicina,opis,tip_izdelka,opomnik)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?)
     """
     with conn:
-        conn.execute(poizvedba, [ime,velikost_pakiranja,enota,kolicina,opis,tip_izdelka,opomnik])
+        conn.execute(poizvedba, [ime,kolicina,opis,tip_izdelka,opomnik])
 
 def nov_izdelek_v_kosarico(st_narocila, sifra_izdelka, cena, kolicina, popust = None, datum_prejetja = None):
     poizvedba = """
@@ -252,3 +252,18 @@ def vrni_sifra_zadnje_narocilo():
         FROM narocila
     """
     return conn.execute(poizvedba).fetchone()[0]
+
+def imena_izdelkov():
+    poizvedba = """
+        SELECT sifra,ime
+        FROM izdelki
+    """
+    return conn.execute(poizvedba).fetchall()
+
+def tipi_izdelkov():
+    poizvedba = """
+        SELECT sifra,tip_izdelka
+        FROM izdelki
+        GROUP BY tip_izdelka
+    """
+    return conn.execute(poizvedba).fetchall()

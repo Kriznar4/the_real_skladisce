@@ -1,0 +1,28 @@
+%rebase('osnova')
+
+<h1 class="title">Novo naročilo:</h1>
+<head>
+<style>
+table, th, td {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+</style>
+</head>
+<form method="post">
+Število naročila: <input type="text" name="st_narocila" value="{{st_narocila}}" /><br />
+
+Tip izdelka: <select name="tip_izdelka">
+% for id, ime in imena:
+    <option value="{{id}}" >{{ime}}</option>
+% end
+</select>
+<br />
+
+Kolicina: <input type="text" name="kolicina" value="{{kolicina}}" /><br />
+Cena na kos: <input type="text" name="cena" value="{{cena}}" /><br />
+Popust v %: <input type="text" name="popust" value="{{popust}}" /><br />
+
+<br />
+<input type="submit" value="Dodaj izdelek">
+</form>
