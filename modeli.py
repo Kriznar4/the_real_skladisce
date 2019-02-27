@@ -297,7 +297,7 @@ def vrni_letno(leto: int):
             narocila ON kosarica.st_narocila = narocila.st_narocila
             JOIN
             izdelki ON kosarica.sifra_izdelka = izdelki.sifra
-        WHERE narocila.datum_narocila LIKE "%2017"
+        WHERE narocila.datum_narocila LIKE "%?"
         GROUP BY izdelki.sifra,
                 izdelki.ime
         ORDER BY izdelki.ime
