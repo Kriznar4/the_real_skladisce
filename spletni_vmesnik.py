@@ -200,4 +200,27 @@ def dodaj_izdelek():
                         opomnik=0)
     redirect('/')
 
+@get('/letni pregled porabe/')
+def letni_pregled():
+    leta = modeli.vrni_leta()
+    
+    return template(
+        'letni_pregled',
+        leta=leta,
+
+    )
+
+@post('/letni pregled porabe/')
+def letni_pregled_podatkov():
+    kateri_podatki = ["ID", "Ime", "Letna poraba za nabavo", "Povprečna cena na 1 izdelek"]
+    podatki = 
+    leto = int(request.forms.value)
+
+    return template(
+        'najdi_izdelek',
+        lastnosti = lastnosti,
+        izdelki = izdelki,
+        ime = request.forms.ime
+    )
+
 run(reloader=True, debug=True)

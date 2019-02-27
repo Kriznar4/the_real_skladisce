@@ -13,7 +13,6 @@ table, th, td {
 <form method="post">
 Ime: <input type="text" name="ime" value="{{ime}}">
 <input type="submit" value="Izpiši">
-</form>
 
 %poravnave = ['left', 'left', 'center', 'center']
 <table border = 5>
@@ -34,3 +33,4 @@ Ime: <input type="text" name="ime" value="{{ime}}">
         </tr>
     %end
 </table>
+</form>

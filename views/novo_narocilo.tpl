@@ -3,10 +3,7 @@
 <h1 class="title">Novo naročilo:</h1>
 <head>
 <style>
-table, th, td {
-  padding-right: 10px;
-  padding-left: 10px;
-}
+
 </style>
 </head>
 <form method="post">
