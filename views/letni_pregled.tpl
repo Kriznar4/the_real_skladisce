@@ -3,7 +3,12 @@
 <h1 class="title">Poraba katerega let vas zanima?</h1>
 
 <form method="post">
+
+Leto: <select name="leto">
 %for leto in leta:
-    <input type="submit" name="leto{{leto}}" value="{{leto}}"> <br />
-%end
+    <option value="{{leto}}" >{{leto}}</option>
+% end
+</select>
+
+<input type="submit" value="Poglej">
 </form>

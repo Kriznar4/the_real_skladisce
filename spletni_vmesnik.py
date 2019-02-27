@@ -213,14 +213,15 @@ def letni_pregled():
 @post('/letni pregled porabe/')
 def letni_pregled_podatkov():
     kateri_podatki = ["ID", "Ime", "Letna poraba za nabavo", "Povprečna cena na 1 izdelek"]
-    podatki = 
-    leto = int(request.forms.value)
+    leto = request.forms.leto
+    izdelki = modeli.vrni_letno(leto)
+    print(leto)
 
     return template(
-        'najdi_izdelek',
-        lastnosti = lastnosti,
+        'pokazi_porabo',
+        tip_lastnosti = kateri_podatki,
         izdelki = izdelki,
-        ime = request.forms.ime
+        leto = leto
     )
 
 run(reloader=True, debug=True)

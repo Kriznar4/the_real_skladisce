@@ -1,6 +1,6 @@
 %rebase('osnova')
 
-<h1 class="title">Poraba katerega let vas zanima?</h1>
+<h1 class="title">Letna poraba za leto {{leto}}</h1>
 <head>
 <style>
 table, th, td {
@@ -9,8 +9,23 @@ table, th, td {
 }
 </style>
 </head>
-<form method="post">
-%for leto in leta:
-    <input type="submit" value="{{leto}}"> <br />
-%end
+%poravnave = ['left', 'left', 'right', 'right']
+<table border = 5>
+    <tr>
+        %for poravnava, tip_lastnost in zip(poravnave, tip_lastnosti):
+            <th style='text-align: {{ poravnava }}'>
+                {{ tip_lastnost }}
+            </th>
+        %end
+    </tr>
+    %for izdelek in izdelki:
+        <tr>
+            %for poravnava, lastnost in zip(poravnave, izdelek):
+                <td style='text-align: {{ poravnava }}'>
+                    {{ lastnost }}
+                </td>
+            %end
+        </tr>
+    %end
+</table>
 </form>

@@ -279,29 +279,28 @@ def ime_izdelka_iz_sifre(stevilo):
 def vrni_leta():
     """Vrne seznam z leti v katerih smo nakupovali izdelke"""
     poizvedba = """
-        SELECT DISTINCT SUBSTR(datum_narocila, -4, 4)
+        SELECT DISTINCT SUBSTR(datum_narocila, -4, 4) AS leto
         FROM narocila
+        ORDER BY leto
     """
     return [el[0] for el in conn.execute(poizvedba).fetchall()]
 
-def vrni_letno(leto: int):
+def vrni_letno(leto: str):
     """Vrne ["ID", "Ime", "Letna poraba za nabavo", 
     "Povprečna cena na 1 izdelek"] za leto za vse izdelke v tem letu."""
     poizvedba = """
         SELECT izdelki.sifra,
             izdelki.ime,
-            SUM(kosarica.cena - kosarica.cena * kosarica.popust/100),
-            SUM(kosarica.cena - kosarica.cena * kosarica.popust/100) / SUM(kosarica.kolicina) 
+            ROUND(SUM(kosarica.cena - kosarica.cena * kosarica.popust/100), 2),
+            ROUND(SUM(kosarica.cena - kosarica.cena * kosarica.popust/100) / SUM(kosarica.kolicina), 2) 
         FROM kosarica
             JOIN
             narocila ON kosarica.st_narocila = narocila.st_narocila
             JOIN
             izdelki ON kosarica.sifra_izdelka = izdelki.sifra
-        WHERE narocila.datum_narocila LIKE "%?"
+        WHERE narocila.datum_narocila LIKE ?
         GROUP BY izdelki.sifra,
                 izdelki.ime
         ORDER BY izdelki.ime
         """
-    return conn.execute(poizvedba, [leto]).fetchall()
-
-print(vrni_letno(2017))
+    return conn.execute(poizvedba, ["%" + leto]).fetchall()
