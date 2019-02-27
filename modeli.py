@@ -288,12 +288,18 @@ def vrni_letno(leto: int):
     """Vrne ["ID", "Ime", "Letna poraba za nabavo", 
     "Povprečna cena na 1 izdelek"] za leto za vse izdelke v tem letu."""
     poizvedba = """
-        SELECT izdelki.sifra, izdelki.ime, SUM(kosarica.cena - kosarica.cena*kosarica.popust/100), SUM(kosarica.cena - kosarica.cena*kosarica.popust/100) / SUM(kosarica.kolicina)
-        FROM kosarica 
-        JOIN narocila ON kosarica.st_narocila = narocila.st_narocila
-        JOIN izdelki ON kosarica.sifra_izdelka = izdelki.sifra
-        WHERE narocila.datum_narocila LIKE "%?"
-        GROUP BY izdelki.sifra, izdelki.ime
+        SELECT izdelki.sifra,
+            izdelki.ime,
+            SUM(kosarica.cena - kosarica.cena * kosarica.popust/100),
+            SUM(kosarica.cena - kosarica.cena * kosarica.popust/100) / SUM(kosarica.kolicina) 
+        FROM kosarica
+            JOIN
+            narocila ON kosarica.st_narocila = narocila.st_narocila
+            JOIN
+            izdelki ON kosarica.sifra_izdelka = izdelki.sifra
+        WHERE narocila.datum_narocila LIKE "%2017"
+        GROUP BY izdelki.sifra,
+                izdelki.ime
         ORDER BY izdelki.ime
         """
     return conn.execute(poizvedba, [leto]).fetchall()
