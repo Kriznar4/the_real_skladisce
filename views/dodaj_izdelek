@@ -12,10 +12,12 @@ table, th, td {
 <form method="post">
 Ime: <input type="text" name="ime" value="{{ime}}" /><br />
 Kolicina: <input type="text" name="kolicina" value="{{kolicina}}" /><br />
-Tip izdelka: <select name="tip_izdelka">
+Tip izdelka: <input type="text" name="tip_izdelka" list="tipi">
+<datalist id="tipi">
 % for id, tip in tipi_izdelkov:
     <option value="{{tip}}" >{{tip}}</option>
 % end
+</datalist>
 </select>
 <br />
 Opis: <br />
