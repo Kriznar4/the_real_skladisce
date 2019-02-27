@@ -6,6 +6,8 @@ moznosti = ['poglej skladišče','dodaj izdelek', 'novo narocilo', 'preglej nepr
             'vpisi prejeto posiljko', 'spremeni količino izdelka v skladišču', 
             'letni pregled porabe', 'najdi izdelek']
 
+seznam_izdelkov_v_kosarici = list()
+
 @get('/')
 def glavna_stran():
     izbire = [
@@ -84,16 +86,88 @@ def poglejte_skladisce():
 
 @get('/novo narocilo/')
 def dodaj_narocilo():
+    seznam_izdelki=seznam_izdelkov_v_kosarici
+    lastnosti=["sifra","ime","kolicina","cena","popust"]
     imena_izdelkov = modeli.imena_izdelkov()
     st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
     return template('novo_narocilo',
                     imena= imena_izdelkov,
-                    st_narocila=st_zadnjega_narocila+1,
-                    sifra=None,
-                    kolicina=0,
+                    sifra="",
+                    ime="",
+                    kolicina="",
+                    cena=None,
+                    popust=None
+    )
+                    
+@post('/novo narocilo/')
+def dodajanje_narocilo():
+    seznam_izdelkov=seznam_izdelkov_v_kosarici
+    sifra_izbranega=request.forms.izbran
+    nov_izdelek=(sifra_izbranega,modeli.ime_izdelka_iz_sifre(sifra_izbranega)[0],request.forms.kolicina,request.forms.cena,request.forms.popust)
+    seznam_izdelkov.append(nov_izdelek)
+    print(seznam_izdelkov)
+    lastnosti=["sifra","ime","kolicina","cena","popust"]
+    imena_izdelkov = modeli.imena_izdelkov()
+    st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
+    return template('novo_narocilo2',
+                    lastnosti=lastnosti,
+                    sez_izdelkov=seznam_izdelkov,
+                    imena= imena_izdelkov,
+                    sifra="",
+                    ime="",
+                    kolicina="",
                     cena=None,
                     popust=None
                     )
+    
+
+
+@get('/novo narocilo2/')
+def dodaj_narocilo():
+    seznam_izdelki=seznam_izdelkov_v_kosarici
+    lastnosti=["sifra","ime","kolicina","cena","popust"]
+    imena_izdelkov = modeli.imena_izdelkov()
+    st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
+    return template('novo_narocilo2',
+                    lastnosti=lastnosti,
+                    sez_izdelkov=seznam_izdelki,
+                    imena= imena_izdelkov,
+                    sifra="",
+                    ime="",
+                    kolicina="",
+                    cena=None,
+                    popust=None
+    )
+                    
+@post('/novo narocilo2/')
+def dodajanje_narocilo():
+    redirect('/koncaj narocilo/')
+
+@get('/koncaj narocilo/')
+def koncaj_narocilo():
+    lastnosti=["sifra","ime","kolicina","cena","popust"]
+    seznam_izdelkov=seznam_izdelkov_v_kosarici
+    return template('koncaj_narocilo',
+                    lastnosti = lastnosti,
+                    sez_izdelkov=seznam_izdelkov)
+
+@post('/koncaj narocilo/')
+def koncaj_narocilo():
+    lastnosti=["sifra","ime","kolicina","cena","popust"]
+    seznam_izdelkov=seznam_izdelkov_v_kosarici
+    print(seznam_izdelkov)
+    sifra_narocila=modeli.vrni_sifra_zadnje_narocilo()+1
+    for izdelek in seznam_izdelkov_v_kosarici:
+        try: 
+            modeli.nov_izdelek_v_kosarico(sifra_narocila,izdelek[0],izdelek[3],izdelek[2],izdelek[4])
+            seznam_izdelkov_v_kosarici=list()
+        except:
+            seznam_izdelkov_v_kosarici=list()
+            return template('koncaj_narocilo',
+                    lastnosti = lastnosti,
+                    sez_izdelkov=seznam_izdelkov)
+    redirect('/')
+
 
 
 @get('/dodaj izdelek/')

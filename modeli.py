@@ -267,3 +267,11 @@ def tipi_izdelkov():
         GROUP BY tip_izdelka
     """
     return conn.execute(poizvedba).fetchall()
+
+def ime_izdelka_iz_sifre(stevilo):
+    poizvedba = """
+        SELECT ime
+        FROM izdelki
+        WHERE sifra=?
+        """
+    return conn.execute(poizvedba, [stevilo]).fetchone()

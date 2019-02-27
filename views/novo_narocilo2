@@ -9,6 +9,27 @@ table, th, td {
 }
 </style>
 </head>
+
+%poravnave = ['left', 'left', 'center', 'center','center']
+<table border = 5>
+    <tr>
+        %for poravnava, tip_lastnosti in zip(poravnave, lastnosti):
+            <th style='text-align: {{ poravnava }}'>
+                {{ tip_lastnosti }}
+            </th>
+        %end
+    </tr>
+    %for izdelek in sez_izdelkov:
+        <tr>
+            %for poravnava, lastnost in zip(poravnave, izdelek):
+                <td style='text-align: {{ poravnava }}'>
+                    {{ lastnost }}
+                </td>
+            %end
+        </tr>
+    %end
+</table>
+
 <form method="post">
 
 Izdelek: <select name="izbran">
