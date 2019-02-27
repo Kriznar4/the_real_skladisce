@@ -340,6 +340,3 @@ def posodobitev_ponudbe(partner, seznam_produktov):
     seznam_prod=set(seznam_produktov)
     for izdelek in seznam_prod-prava_ponudba:
         dodaj_v_ponudbo_partnerja(partner,izdelek)
-    
-
-
