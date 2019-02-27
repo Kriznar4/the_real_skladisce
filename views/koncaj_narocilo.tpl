@@ -29,8 +29,21 @@ table, th, td {
         </tr>
     %end
 </table>
+<br />
 
 <form method="post">
-<button type="submit" formaction="/novo narocilo/">Ne želim oddati naročila</button>
+Komentar k naročilu: <br />
+<textarea name="opis" value={{opis}} rows="5" cols="60">
+
+</textarea>
+<br />
+Partner: <select name="izbran_partner">
+% for id, ime in part:
+    <option value="{{id}}" >{{ime}}</option>
+% end
+</select>
+<br />
+<br />
+<button type="submit" formaction="/ne oddaj narocila/">Ne želim oddati naročila</button>
 <input type="submit" value="Oddaj naročilo">
 </form>

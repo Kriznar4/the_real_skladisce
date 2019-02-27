@@ -86,7 +86,7 @@ def poglejte_skladisce():
 
 @get('/novo narocilo/')
 def dodaj_narocilo():
-    seznam_izdelki=seznam_izdelkov_v_kosarici
+    seznam_izdelkov=list()
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     imena_izdelkov = modeli.imena_izdelkov()
     st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
@@ -105,7 +105,6 @@ def dodajanje_narocilo():
     sifra_izbranega=request.forms.izbran
     nov_izdelek=(sifra_izbranega,modeli.ime_izdelka_iz_sifre(sifra_izbranega)[0],request.forms.kolicina,request.forms.cena,request.forms.popust)
     seznam_izdelkov.append(nov_izdelek)
-    print(seznam_izdelkov)
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     imena_izdelkov = modeli.imena_izdelkov()
     st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
@@ -138,7 +137,13 @@ def dodaj_narocilo():
                     cena=None,
                     popust=None
     )
-                    
+
+@post('/ne oddaj narocila/')
+def ne_oddaj():
+    sprazni(seznam_izdelkov_v_kosarici)
+    seznam_izdelkov=list()
+    redirect('/')
+
 @post('/novo narocilo2/')
 def dodajanje_narocilo():
     redirect('/koncaj narocilo/')
@@ -147,27 +152,30 @@ def dodajanje_narocilo():
 def koncaj_narocilo():
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     seznam_izdelkov=seznam_izdelkov_v_kosarici
+    partnerji=modeli.imena_partnerjev()
     return template('koncaj_narocilo',
+                    part=partnerji,
+                    izbran_partner="",
                     lastnosti = lastnosti,
-                    sez_izdelkov=seznam_izdelkov)
+                    sez_izdelkov=seznam_izdelkov,
+                    opis="")
 
 @post('/koncaj narocilo/')
-def koncaj_narocilo():
+def dokoncaj_narocilo():
+    izbran_partner=request.forms.izbran_partner
+    opis=request.forms.opis
+
+    modeli.v_narocila(izbran_partner,opis)
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     seznam_izdelkov=seznam_izdelkov_v_kosarici
-    print(seznam_izdelkov)
-    sifra_narocila=modeli.vrni_sifra_zadnje_narocilo()+1
-    for izdelek in seznam_izdelkov_v_kosarici:
-        try: 
-            modeli.nov_izdelek_v_kosarico(sifra_narocila,izdelek[0],izdelek[3],izdelek[2],izdelek[4])
-            seznam_izdelkov_v_kosarici=list()
-        except:
-            seznam_izdelkov_v_kosarici=list()
-            return template('koncaj_narocilo',
-                    lastnosti = lastnosti,
-                    sez_izdelkov=seznam_izdelkov)
-    redirect('/')
 
+    st_naro=modeli.vrni_sifra_zadnje_narocilo()
+    for izdelek in seznam_izdelkov:
+            print("oh boi")
+            modeli.nov_izdelek_v_kosarico(st_naro,izdelek[0],izdelek[3],izdelek[4],izdelek[2])
+            print("yeah boi")
+    seznam_izdelkov=list()
+    redirect('/')
 
 
 @get('/dodaj izdelek/')
@@ -199,6 +207,10 @@ def dodaj_izdelek():
                         opis="",
                         opomnik=0)
     redirect('/')
+
+def sprazni(seznam):
+    for i in range(len(seznam)):
+        del seznam[0]
 
 @get('/letni pregled porabe/')
 def letni_pregled():

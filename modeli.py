@@ -253,6 +253,13 @@ def vrni_sifra_zadnje_narocilo():
     """
     return conn.execute(poizvedba).fetchone()[0]
 
+def imena_partnerjev():
+    poizvedba = """
+        SELECT sifra,ime
+        FROM partnerji
+    """
+    return conn.execute(poizvedba).fetchall()
+
 def imena_izdelkov():
     poizvedba = """
         SELECT sifra,ime
