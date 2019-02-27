@@ -172,11 +172,15 @@ def dokoncaj_narocilo():
     modeli.v_narocila(izbran_partner,opis)
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     seznam_izdelkov=seznam_izdelkov_v_kosarici
+    seznam_idjev=list()
 
     st_naro=modeli.vrni_sifra_zadnje_narocilo()
     for izdelek in seznam_izdelkov:
-            modeli.nov_izdelek_v_kosarico(st_naro,izdelek[0],izdelek[3],izdelek[4],izdelek[2])
+        seznam_idjev.append(int(izdelek[0]))
+        modeli.nov_izdelek_v_kosarico(st_naro,izdelek[0],izdelek[3],izdelek[4],izdelek[2])
+    modeli.posodobitev_ponudbe(izbran_partner,seznam_idjev)
     seznam_izdelkov=list()
+
     redirect('/')
 
 
