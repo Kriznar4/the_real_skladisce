@@ -3,7 +3,13 @@
 <h1 class="title">Povečaj količino izdelka v skladišču:</h1>
 
 <form method="post">
-ID: <input type="text" name="id" value="{{id}}" /><br />
+Izdelek: <select name="id">
+% for id, ime in imena:
+    <option value="{{id}}" >{{ime}}</option>
+% end
+</select>
+<br />
+
 Koliko sem dodal v skladišče: <input type="text" name="kolicina" value="{{kolicina}}" /><br />
 <p><br>{{!sporocilo}}<br></p>
 <input type="submit" value="Dodaj izdelek">

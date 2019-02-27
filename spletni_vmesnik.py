@@ -31,11 +31,13 @@ def poglej_skladisce():
 
 @get('/spremeni količino izdelka v skladišču/')
 def spremeni_skladisce():
+    imena_izdelkov=modeli.imena_izdelkov()
     izdelki = modeli.podatki_skladisca()
     lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
     sporocilo = "<br>"
     return template(
         'spr_kolicino',
+        imena=imena_izdelkov,
         lastnosti = lastnosti,
         izdelki = izdelki,
         id = "",
@@ -45,6 +47,7 @@ def spremeni_skladisce():
 
 @post('/spremeni količino izdelka v skladišču/')
 def spremenjanje_skladisce():
+    imena_izdelkov=modeli.imena_izdelkov()
     izdelki = modeli.podatki_skladisca()
     lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
     try:
@@ -53,6 +56,7 @@ def spremenjanje_skladisce():
     except:
         return template(
             'spr_kolicino',
+            imena=imena_izdelkov,
             lastnosti = lastnosti,
             izdelki = izdelki,
             id=request.forms.id,
@@ -171,9 +175,7 @@ def dokoncaj_narocilo():
 
     st_naro=modeli.vrni_sifra_zadnje_narocilo()
     for izdelek in seznam_izdelkov:
-            print("oh boi")
             modeli.nov_izdelek_v_kosarico(st_naro,izdelek[0],izdelek[3],izdelek[4],izdelek[2])
-            print("yeah boi")
     seznam_izdelkov=list()
     redirect('/')
 
