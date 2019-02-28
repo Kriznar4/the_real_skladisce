@@ -20,7 +20,8 @@ def glavna_stran():
     ]
     return template(
         'glavna_stran',
-        izbire = izbire
+        izbire = izbire,
+        sez_kos = seznam_izdelkov_v_kosarici
     )
 
 @get('/poglej skladišče/')
@@ -97,8 +98,7 @@ def poglejte_skladisce():
 
 @get('/novo narocilo/')
 def dodaj_narocilo():
-    sprazni(seznam_izdelkov_v_kosarici)
-    seznam_izdelkov=list()
+    seznam_izdelkov=seznam_izdelkov_v_kosarici
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     imena_izdelkov = modeli.imena_izdelkov()
     st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()

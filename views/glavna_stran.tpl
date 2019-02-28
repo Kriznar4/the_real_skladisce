@@ -5,6 +5,10 @@
 <ul>
 %i = 1
 %for izbira, url in izbire:
+    %if izbira == 'novo narocilo' and len(sez_kos) != 0:
+        %url = '/novo narocilo2/'
+    %end
+
     <li>
         <a href="{{ url }}">
             {{i}}: {{izbira}}
