@@ -47,4 +47,9 @@ Popust v %: <input type="text" name="popust" value="{{popust}}" /><br />
 <button type="submit" formaction="/novo narocilo/">Dodaj izdelek</button>
 <br />
 <button type="submit" formaction="/novo narocilo2/">Končaj naročilo</button>
+
+<br />
+<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<br />
+
 </form>

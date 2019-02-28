@@ -65,7 +65,7 @@ def spremenjanje_skladisce():
             izdelki = izdelki,
             id=request.forms.id,
             kolicina=request.forms.kolicina,
-            sporocilo="Nekaj ni šlo skozi! <br>"
+            sporocilo="V skladišču ni bilo toliko izdelkov! <br>"
             )
     redirect('/spremeni količino izdelka v skladišču/')
 
@@ -83,17 +83,21 @@ def poglej_skladisce():
 @post('/najdi izdelek/')
 def poglejte_skladisce():
     lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
-    izdelki2 = modeli.izdelki_podatki(modeli.poisci_izdelek(request.forms.ime))
-    izdelki = [[lastn for lastn, st in zip(izdelek, [0, 1, 2, 3, 4, 5]) if st in [0, 1, 2, 4] ] for izdelek in izdelki2]
-    return template(
+    try:
+        izdelki2 = modeli.izdelki_podatki(modeli.poisci_izdelek(request.forms.ime))
+        izdelki = [[lastn for lastn, st in zip(izdelek, [0, 1, 2, 3, 4, 5]) if st in [0, 1, 2, 4] ] for izdelek in izdelki2]
+        return template(
         'najdi_izdelek',
         lastnosti = lastnosti,
         izdelki = izdelki,
         ime = request.forms.ime
     )
+    except:
+        redirect('/najdi izdelek/')
 
 @get('/novo narocilo/')
 def dodaj_narocilo():
+    sprazni(seznam_izdelkov_v_kosarici)
     seznam_izdelkov=list()
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     imena_izdelkov = modeli.imena_izdelkov()
@@ -156,6 +160,10 @@ def ne_oddaj():
 def dodajanje_narocilo():
     redirect('/koncaj narocilo/')
 
+@post('/vrnime na prvo stran/')
+def vrni():
+    redirect('/')
+
 @get('/koncaj narocilo/')
 def koncaj_narocilo():
     lastnosti=["sifra","ime","kolicina","cena","popust"]
@@ -176,11 +184,15 @@ def dokoncaj_narocilo():
     modeli.v_narocila(izbran_partner,opis)
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     seznam_izdelkov=seznam_izdelkov_v_kosarici
+    seznam_idjev=list()
 
     st_naro=modeli.vrni_sifra_zadnje_narocilo()
     for izdelek in seznam_izdelkov:
-            modeli.nov_izdelek_v_kosarico(st_naro,izdelek[0],izdelek[3],izdelek[4],izdelek[2])
+        seznam_idjev.append(int(izdelek[0]))
+        modeli.nov_izdelek_v_kosarico(st_naro,izdelek[0],izdelek[3],izdelek[4],izdelek[2])
+    modeli.posodobitev_ponudbe(izbran_partner,seznam_idjev)
     seznam_izdelkov=list()
+
     redirect('/')
 
 
@@ -262,7 +274,7 @@ def neprejete_posiljke():
     )
 
 @post('/preglej neprejete pošiljke/')
-def neprejete_posiljke():
+def neprejete_posiljke_post():
     izdelki = modeli.neprejete()
     tipi_lastnosti = ["Nastavi enak datum", "Številka naročila", "Šifra izdelka", "Ime izdelka", 
     "Količina", "Šifra partnerja", "Ime partnerja", "Datum naročila"]

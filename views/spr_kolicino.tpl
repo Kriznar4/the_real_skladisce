@@ -12,7 +12,8 @@ Izdelek: <select name="id">
 
 Koliko sem dodal v skladišče: <input type="text" name="kolicina" value="{{kolicina}}" /><br />
 <p><br>{{!sporocilo}}<br></p>
-<input type="submit" value="Dodaj izdelek">
+<input type="submit" value="Spremeni količino">
+
 </form>
 
 <h1 class="title">Takole izgleda vaše skladišče:</h1>
@@ -46,5 +47,9 @@ table, th, td {
 </table>
 
 
-
+<form method="post">
+<br />
+<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<br />
+</form>
 

@@ -28,4 +28,10 @@ table, th, td {
         </tr>
     %end
 </table>
+
+</form>
+<form method="post">
+<br />
+<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<br />
 </form>

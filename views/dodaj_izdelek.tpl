@@ -27,4 +27,9 @@ Opis: <br />
 <br />
 Opomnik: <input type="text" name="opomnik" value="{{opomnik}}" /><br />
 <input type="submit" value="Dodaj izdelek">
+
+<br />
+<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<br />
+
 </form>
