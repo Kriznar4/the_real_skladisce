@@ -94,6 +94,7 @@ def poglejte_skladisce():
 
 @get('/novo narocilo/')
 def dodaj_narocilo():
+    sprazni(seznam_izdelkov_v_kosarici)
     seznam_izdelkov=list()
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     imena_izdelkov = modeli.imena_izdelkov()
