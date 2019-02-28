@@ -332,7 +332,6 @@ def neprejete():
 def datum_prejetja(dan, mesec, leto, sifra_izdelka, sifra_narocila):
     """Vstavi datum v kosarico"""
     datum = mesec + "/" + dan + "/" + leto
-    print(datum)
     poizvedba = """
         UPDATE kosarica
         SET datum_prejetja = ?
