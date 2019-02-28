@@ -13,7 +13,7 @@ Leto: <select name="leto">
 <input type="submit" value="Poglej">
 
 <br />
-<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<button type="submit" formaction="/vrnime na prvo stran/">Vrni me nazaj</button>
 <br />
 
 </form>

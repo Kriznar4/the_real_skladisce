@@ -48,7 +48,7 @@ Leto: <input type="text" name="leto" value="{{leto}}" /><br />
 
 
 <br />
-<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<button type="submit" formaction="/vrnime na prvo stran/">Vrni me nazaj</button>
 <br />
 
 </form>

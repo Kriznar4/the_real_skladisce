@@ -35,7 +35,7 @@ Ime: <input type="text" name="ime" value="{{ime}}">
 </table>
 
 <br />
-<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<button type="submit" formaction="/vrnime na prvo stran/">Vrni me nazaj</button>
 <br />
 
 </form>
