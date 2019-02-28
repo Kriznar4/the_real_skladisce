@@ -279,9 +279,12 @@ def neprejete_posiljke_post():
     tipi_lastnosti = ["Nastavi enak datum", "Številka naročila", "Šifra izdelka", "Ime izdelka", 
     "Količina", "Šifra partnerja", "Ime partnerja", "Datum naročila"]
     obklukani = list()
+    dan = request.forms.dan
+    mesec = request.forms.mesec
+    leto = request.forms.leto
     for i in range(len(izdelki)):
         if request.forms.get(str(i)) == 'on':
-            modeli.datum_prejetja(request.forms.dan, request.forms.mesec, request.forms.leto, izdelki[i][1], izdelki[i][0])
+            modeli.datum_prejetja(dan, mesec, leto, izdelki[i][1], izdelki[i][0])
     return template(
         'neprejete', 
         tipi_lastnosti = tipi_lastnosti,
