@@ -342,3 +342,31 @@ def datum_prejetja(dan, mesec, leto, sifra_izdelka, sifra_narocila):
     with conn:
         conn.execute(poizvedba, [datum, int(sifra_izdelka), int(sifra_narocila)])
 
+def dodaj_v_ponudbo_partnerja(partner,izdelek):
+    poizvedba="""
+        INSERT INTO ponudba
+        (partner, izdelek)
+        VALUES (?,?)
+    """
+    with conn:
+        conn.execute(poizvedba,[partner,izdelek])
+
+
+def ponudba_partnerja(partner):
+    """vrne ID-je produktov, ki jih partner ponuja"""
+    poizvedba="""
+        SELECT izdelek
+        FROM ponudba
+        where partner = ?
+    """
+    return conn.execute(poizvedba,[partner]).fetchall()
+
+
+def posodobitev_ponudbe(partner, seznam_produktov):
+    ponudba=ponudba_partnerja(partner)
+    prava_ponudba=set()
+    for izdelek in ponudba:
+        prava_ponudba.add(izdelek[0])
+    seznam_prod=set(seznam_produktov)
+    for izdelek in seznam_prod-prava_ponudba:
+        dodaj_v_ponudbo_partnerja(partner,izdelek)
