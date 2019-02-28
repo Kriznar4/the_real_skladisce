@@ -264,7 +264,7 @@ def imena_izdelkov():
     poizvedba = """
         SELECT sifra,ime
         FROM izdelki
-    """
+       """
     return conn.execute(poizvedba).fetchall()
 
 def tipi_izdelkov():
@@ -311,3 +311,34 @@ def vrni_letno(leto: str):
         ORDER BY izdelki.ime
         """
     return conn.execute(poizvedba, ["%" + leto]).fetchall()
+
+def neprejete():
+    """Vrne seznam neprejetih pošiljk oblike [(st_narocila, 
+    sifra_izdelka, ime_izdelka, kolicina, sifra_partnerja, ime_partnerja, datum_narocila), ...]"""
+    poizvedba = """
+        SELECT kosarica.st_narocila, kosarica.sifra_izdelka, izdelki.ime, kosarica.kolicina, partnerji.sifra, partnerji.ime, narocila.datum_narocila
+        FROM kosarica
+            JOIN
+            narocila ON kosarica.st_narocila = narocila.st_narocila
+            JOIN
+            izdelki ON kosarica.sifra_izdelka = izdelki.sifra
+            JOIN
+            partnerji ON partnerji.sifra = narocila.partner
+        WHERE kosarica.datum_prejetja IS NULL
+        ORDER BY kosarica.st_narocila desc, kosarica.sifra_izdelka asc
+        """
+    return conn.execute(poizvedba).fetchall()
+
+def datum_prejetja(dan, mesec, leto, sifra_izdelka, sifra_narocila):
+    """Vstavi datum v kosarico"""
+    datum = mesec + "/" + dan + "/" + leto
+    print(datum)
+    poizvedba = """
+        UPDATE kosarica
+        SET datum_prejetja = ?
+        WHERE sifra_izdelka = ?
+        AND st_narocila = ?
+    """
+    with conn:
+        conn.execute(poizvedba, [datum, int(sifra_izdelka), int(sifra_narocila)])
+

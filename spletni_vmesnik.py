@@ -2,9 +2,13 @@ import bottle
 from bottle import get, run, template, post, redirect, request
 import modeli
 
-moznosti = ['poglej skladišče','dodaj izdelek', 'novo narocilo', 'preglej neprejete pošiljke', 
-            'vpisi prejeto posiljko', 'spremeni količino izdelka v skladišču', 
-            'letni pregled porabe', 'najdi izdelek']
+moznosti = ['poglej skladišče',
+            'dodaj izdelek', 
+            'novo narocilo', 
+            'preglej neprejete pošiljke', 
+            'spremeni količino izdelka v skladišču', 
+            'letni pregled porabe', 
+            'najdi izdelek']
 
 seznam_izdelkov_v_kosarici = list()
 
@@ -194,8 +198,11 @@ def dodaj_izdelek():
 @post('/dodaj izdelek/')
 def dodaj_izdelek():
     try:
+        kolicina = request.forms.kolicina
+        if not kolicina:
+            kolicina = None
         modeli.nov_izdelek(request.forms.ime,
-                                request.forms.kolicina,
+                                kolicina,
                                 request.forms.opis,
                                 request.forms.tip_izdelka,
                                 request.forms.opomnik)
@@ -236,6 +243,41 @@ def letni_pregled_podatkov():
         tip_lastnosti = kateri_podatki,
         izdelki = izdelki,
         leto = leto
+    )
+
+@get('/preglej neprejete pošiljke/')
+def neprejete_posiljke():
+    izdelki = modeli.neprejete()
+    tipi_lastnosti = ["Nastavi enak datum", "Številka naročila", "Šifra izdelka", "Ime izdelka", 
+    "Količina", "Šifra partnerja", "Ime partnerja", "Datum naročila"]
+    
+    return template(
+        'neprejete', 
+        tipi_lastnosti = tipi_lastnosti,
+        izdelki = izdelki,
+        dan = None,
+        mesec = None,
+        leto = None
+
+    )
+
+@post('/preglej neprejete pošiljke/')
+def neprejete_posiljke():
+    izdelki = modeli.neprejete()
+    tipi_lastnosti = ["Nastavi enak datum", "Številka naročila", "Šifra izdelka", "Ime izdelka", 
+    "Količina", "Šifra partnerja", "Ime partnerja", "Datum naročila"]
+    obklukani = list()
+    for i in range(len(izdelki)):
+        if request.forms.get(str(i)) == 'on':
+            modeli.datum_prejetja(request.forms.dan, request.forms.mesec, request.forms.leto, izdelki[i][1], izdelki[i][0])
+    return template(
+        'neprejete', 
+        tipi_lastnosti = tipi_lastnosti,
+        izdelki = modeli.neprejete(),
+        dan = None,
+        mesec = None,
+        leto = None
+
     )
 
 run(reloader=True, debug=True)
