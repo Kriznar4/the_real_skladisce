@@ -65,7 +65,7 @@ def spremenjanje_skladisce():
             izdelki = izdelki,
             id=request.forms.id,
             kolicina=request.forms.kolicina,
-            sporocilo="Nekaj ni šlo skozi! <br>"
+            sporocilo="V skladišču ni bilo toliko izdelkov! <br>"
             )
     redirect('/spremeni količino izdelka v skladišču/')
 
@@ -83,14 +83,17 @@ def poglej_skladisce():
 @post('/najdi izdelek/')
 def poglejte_skladisce():
     lastnosti = ['ID', 'Ime', 'Zaloga', 'Tip']
-    izdelki2 = modeli.izdelki_podatki(modeli.poisci_izdelek(request.forms.ime))
-    izdelki = [[lastn for lastn, st in zip(izdelek, [0, 1, 2, 3, 4, 5]) if st in [0, 1, 2, 4] ] for izdelek in izdelki2]
-    return template(
+    try:
+        izdelki2 = modeli.izdelki_podatki(modeli.poisci_izdelek(request.forms.ime))
+        izdelki = [[lastn for lastn, st in zip(izdelek, [0, 1, 2, 3, 4, 5]) if st in [0, 1, 2, 4] ] for izdelek in izdelki2]
+        return template(
         'najdi_izdelek',
         lastnosti = lastnosti,
         izdelki = izdelki,
         ime = request.forms.ime
     )
+    except:
+        redirect('/najdi izdelek/')
 
 @get('/novo narocilo/')
 def dodaj_narocilo():
@@ -156,6 +159,10 @@ def ne_oddaj():
 @post('/novo narocilo2/')
 def dodajanje_narocilo():
     redirect('/koncaj narocilo/')
+
+@post('/vrnime na prvo stran/')
+def vrni():
+    redirect('/')
 
 @get('/koncaj narocilo/')
 def koncaj_narocilo():
@@ -267,7 +274,7 @@ def neprejete_posiljke():
     )
 
 @post('/preglej neprejete pošiljke/')
-def neprejete_posiljke():
+def neprejete_posiljke_post():
     izdelki = modeli.neprejete()
     tipi_lastnosti = ["Nastavi enak datum", "Številka naročila", "Šifra izdelka", "Ime izdelka", 
     "Količina", "Šifra partnerja", "Ime partnerja", "Datum naročila"]

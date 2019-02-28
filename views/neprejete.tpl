@@ -45,6 +45,12 @@ Dan: <input type="text" name="dan" value="{{dan}}" /><br />
 Leto: <input type="text" name="leto" value="{{leto}}" /><br />
 <br />
 <input type="submit" value="Vnesi datum">
+
+
+<br />
+<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<br />
+
 </form>
 
 

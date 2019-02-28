@@ -33,4 +33,9 @@ Ime: <input type="text" name="ime" value="{{ime}}">
         </tr>
     %end
 </table>
+
+<br />
+<button type="submit" formaction="/vrnime na prvo stran/">Vrnime nazaj</button>
+<br />
+
 </form>
