@@ -1,5 +1,5 @@
 import bottle
-from bottle import get, run, template, post, redirect, request
+from bottle import get, run, template, post, redirect, request, response
 import modeli
 
 moznosti = ['poglej skladišče',
@@ -10,7 +10,6 @@ moznosti = ['poglej skladišče',
             'letni pregled porabe', 
             'najdi izdelek']
 
-seznam_izdelkov_v_kosarici = list()
 
 @get('/')
 def glavna_stran():
@@ -21,7 +20,6 @@ def glavna_stran():
     return template(
         'glavna_stran',
         izbire = izbire,
-        sez_kos = seznam_izdelkov_v_kosarici
     )
 
 @get('/poglej skladišče/')
@@ -96,46 +94,20 @@ def poglejte_skladisce():
     except:
         redirect('/najdi izdelek/')
 
+def zapakiraj(tab):
+    return '$$$'.join(['###'.join(str(l) for l in el) for el in tab])
+
+def razpakiraj(niz):
+    return [niz2.split('###') for niz2 in niz.split('$$$')]
+
 @get('/novo narocilo/')
 def dodaj_narocilo():
-    seznam_izdelkov=seznam_izdelkov_v_kosarici
-    lastnosti=["sifra","ime","kolicina","cena","popust"]
-    imena_izdelkov = modeli.imena_izdelkov()
-    st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
-    return template('novo_narocilo',
-                    imena= imena_izdelkov,
-                    sifra="",
-                    ime="",
-                    kolicina="",
-                    cena=None,
-                    popust=None
-    )
-                    
-@post('/novo narocilo/')
-def dodajanje_narocilo():
-    seznam_izdelkov=seznam_izdelkov_v_kosarici
-    sifra_izbranega=request.forms.izbran
-    nov_izdelek=(sifra_izbranega,modeli.ime_izdelka_iz_sifre(sifra_izbranega)[0],request.forms.kolicina,request.forms.cena,request.forms.popust)
-    seznam_izdelkov.append(nov_izdelek)
-    lastnosti=["sifra","ime","kolicina","cena","popust"]
-    imena_izdelkov = modeli.imena_izdelkov()
-    st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
-    return template('novo_narocilo2',
-                    lastnosti=lastnosti,
-                    sez_izdelkov=seznam_izdelkov,
-                    imena= imena_izdelkov,
-                    sifra="",
-                    ime="",
-                    kolicina="",
-                    cena=None,
-                    popust=None
-                    )
-    
-
-
-@get('/novo narocilo2/')
-def dodaj_narocilo():
-    seznam_izdelki=seznam_izdelkov_v_kosarici
+    if request.get_cookie("kosarica") == None:
+        response.set_cookie("kosarica", "", path='/')
+        niz = ""
+    else:
+        niz = request.get_cookie("kosarica")
+    seznam_izdelki=razpakiraj(niz)
     lastnosti=["sifra","ime","kolicina","cena","popust"]
     imena_izdelkov = modeli.imena_izdelkov()
     st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
@@ -150,10 +122,35 @@ def dodaj_narocilo():
                     popust=None
     )
 
+@post('/novo narocilo/')
+def dodajanje_narocilo():
+    if request.get_cookie("kosarica") == None:
+        response.set_cookie("kosarica", "", path='/')
+        niz = ""
+    else:
+        niz = request.get_cookie("kosarica")
+    seznam_izdelki=razpakiraj(niz)
+    sifra_izbranega=request.forms.izbran
+    nov_izdelek=(sifra_izbranega,modeli.ime_izdelka_iz_sifre(sifra_izbranega)[0],request.forms.kolicina,request.forms.cena,request.forms.popust)
+    seznam_izdelki.append(nov_izdelek)
+    response.set_cookie("kosarica", zapakiraj(seznam_izdelki), path='/')
+    lastnosti=["sifra","ime","kolicina","cena","popust"]
+    imena_izdelkov = modeli.imena_izdelkov()
+    st_zadnjega_narocila=modeli.vrni_sifra_zadnje_narocilo()
+    return template('novo_narocilo2',
+                    lastnosti=lastnosti,
+                    sez_izdelkov=seznam_izdelki,
+                    imena= imena_izdelkov,
+                    sifra="",
+                    ime="",
+                    kolicina="",
+                    cena=None,
+                    popust=None
+                    )
+
 @post('/ne oddaj narocila/')
 def ne_oddaj():
-    sprazni(seznam_izdelkov_v_kosarici)
-    seznam_izdelkov=list()
+    response.set_cookie("kosarica", "", path='/')
     redirect('/')
 
 @post('/novo narocilo2/')
@@ -166,14 +163,19 @@ def vrni():
 
 @get('/koncaj narocilo/')
 def koncaj_narocilo():
+    if request.get_cookie("kosarica") == None:
+        response.set_cookie("kosarica", "", path='/')
+        niz = ""
+    else:
+        niz = request.get_cookie("kosarica")
+    seznam_izdelki=razpakiraj(niz)
     lastnosti=["sifra","ime","kolicina","cena","popust"]
-    seznam_izdelkov=seznam_izdelkov_v_kosarici
     partnerji=modeli.imena_partnerjev()
     return template('koncaj_narocilo',
                     part=partnerji,
                     izbran_partner="",
                     lastnosti = lastnosti,
-                    sez_izdelkov=seznam_izdelkov,
+                    sez_izdelkov=seznam_izdelki,
                     opis="")
 
 @post('/koncaj narocilo/')
@@ -183,15 +185,20 @@ def dokoncaj_narocilo():
 
     modeli.v_narocila(izbran_partner,opis)
     lastnosti=["sifra","ime","kolicina","cena","popust"]
-    seznam_izdelkov=seznam_izdelkov_v_kosarici
+    if request.get_cookie("kosarica") == None:
+        response.set_cookie("kosarica", "", path='/')
+        niz = ""
+    else:
+        niz = request.get_cookie("kosarica")
+    seznam_izdelki=razpakiraj(niz)[1:]
     seznam_idjev=list()
 
     st_naro=modeli.vrni_sifra_zadnje_narocilo()
-    for izdelek in seznam_izdelkov:
+    for izdelek in seznam_izdelki:
         seznam_idjev.append(int(izdelek[0]))
         modeli.nov_izdelek_v_kosarico(st_naro,izdelek[0],izdelek[3],izdelek[4],izdelek[2])
     modeli.posodobitev_ponudbe(izbran_partner,seznam_idjev)
-    seznam_izdelkov=list()
+    response.set_cookie("kosarica", "", path='/')
 
     redirect('/')
 
@@ -229,10 +236,6 @@ def dodaj_izdelek():
                         opomnik=0)
     redirect('/')
 
-def sprazni(seznam):
-    for i in range(len(seznam)):
-        del seznam[0]
-
 @get('/letni pregled porabe/')
 def letni_pregled():
     leta = modeli.vrni_leta()
@@ -248,7 +251,6 @@ def letni_pregled_podatkov():
     kateri_podatki = ["ID", "Ime", "Letna poraba za nabavo", "Povprečna cena na 1 izdelek"]
     leto = request.forms.leto
     izdelki = modeli.vrni_letno(leto)
-    print(leto)
 
     return template(
         'pokazi_porabo',

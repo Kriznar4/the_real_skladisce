@@ -19,14 +19,16 @@ table, th, td {
             </th>
         %end
     </tr>
-    %for izdelek in sez_izdelkov:
-        <tr>
-            %for poravnava, lastnost in zip(poravnave, izdelek):
-                <td style='text-align: {{ poravnava }}'>
-                    {{ lastnost }}
-                </td>
-            %end
-        </tr>
+    %if not (sez_izdelkov == [[""]]):
+        %for izdelek in sez_izdelkov:
+            <tr>
+                %for poravnava, lastnost in zip(poravnave, izdelek):
+                    <td style='text-align: {{ poravnava }}'>
+                        {{ lastnost }}
+                    </td>
+                %end
+            </tr>
+        %end
     %end
 </table>
 
